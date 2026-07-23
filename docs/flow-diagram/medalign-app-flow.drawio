@@ -1,0 +1,111 @@
+<mxfile host="app.diagrams.net" modified="2026-07-23T00:00:00.000Z" agent="Mozilla/5.0" version="24.7.12" type="device">
+  <diagram id="medalign-flow" name="MedAlign App Flow">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Swimlane Headers -->
+        <mxCell id="lane1" value="Public / Entry" style="swimlane;horizontal=0;startSize=28;fillColor=#f5f5f5;strokeColor=#bdbdbd;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="40" width="500" height="1220" as="geometry"/>
+        </mxCell>
+        <mxCell id="lane2" value="Clinic Internal (Admin + Reception)" style="swimlane;horizontal=0;startSize=28;fillColor=#f5f5f5;strokeColor=#bdbdbd;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="40" width="560" height="1220" as="geometry"/>
+        </mxCell>
+        <mxCell id="lane3" value="Doctor Workflow" style="swimlane;horizontal=0;startSize=28;fillColor=#f5f5f5;strokeColor=#bdbdbd;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="40" width="500" height="1220" as="geometry"/>
+        </mxCell>
+        <mxCell id="lane4" value="Patient Experience" style="swimlane;horizontal=0;startSize=28;fillColor=#f5f5f5;strokeColor=#bdbdbd;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="40" width="520" height="1220" as="geometry"/>
+        </mxCell>
+
+        <!-- Entry nodes -->
+        <mxCell id="start" value="START" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="210" y="90" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="landing" value="Landing / Marketing Site&#xa;- Overview&#xa;- Pricing&#xa;- Book Demo&#xa;- Clinic Login" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="130" y="190" width="280" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="onboarding" value="Clinic Onboarding&#xa;- Create account&#xa;- Choose plan&#xa;- Add clinic profile&#xa;- Add doctors/staff" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="50" y="350" width="200" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="signin" value="Sign In&#xa;- Email/Phone + OTP&#xa;- Role-based redirect&#xa;- Forgot password" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="280" y="350" width="200" height="130" as="geometry"/>
+        </mxCell>
+
+        <!-- Clinic internal -->
+        <mxCell id="admin" value="Admin Dashboard&#xa;- Queue snapshot&#xa;- Doctor activity&#xa;- Subscription status" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="700" y="220" width="240" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="queueMgmt" value="Queue Management&#xa;- Live queue&#xa;- Token config&#xa;- Counter setup" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="570" y="380" width="180" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="doctors" value="Doctors Management&#xa;- Add/edit doctor&#xa;- Schedules&#xa;- Availability" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="770" y="380" width="180" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="analytics" value="Analytics&#xa;- Avg wait time&#xa;- Patients/day&#xa;- Walkout rate" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="970" y="380" width="180" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="billing" value="Billing &amp; Plan&#xa;- Current plan&#xa;- Upgrade/Downgrade&#xa;- Invoices" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="670" y="510" width="220" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="staff" value="Staff &amp; Role Management&#xa;- Admin/Doctor/Reception&#xa;- Permissions (RBAC)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="910" y="510" width="220" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="reception" value="Receptionist Desk&#xa;- Register walk-in&#xa;- Generate token&#xa;- Send SMS/WhatsApp link&#xa;- Reassign/Cancel token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="690" y="650" width="300" height="130" as="geometry"/>
+        </mxCell>
+
+        <!-- Doctor lane -->
+        <mxCell id="doctorDash" value="Doctor Dashboard&#xa;- Current patient&#xa;- Next 5 queue&#xa;- Call Next / Skip / Recall&#xa;- Mark complete" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="520" width="300" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="rxEngine" value="Rapid Prescription Engine&#xa;- Template select&#xa;- Med + dosage&#xa;- Voice-to-text (future)&#xa;- Generate QR/PDF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="700" width="300" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="rxDelivery" value="Prescription Delivery&#xa;- SMS/WhatsApp secure link&#xa;- QR retrieval&#xa;- PDF download" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="880" width="300" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- Patient lane -->
+        <mxCell id="patientPWA" value="Patient Queue Tracker (PWA)&#xa;- Token number&#xa;- Live queue position&#xa;- Estimated wait time&#xa;- Status updates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1730" y="650" width="340" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="alerts" value="Alert Preferences&#xa;- SMS/WhatsApp near-turn alerts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1790" y="820" width="220" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="vault" value="Patient Medical Vault&#xa;- OTP login&#xa;- Prescription history&#xa;- Search/filter&#xa;- Download/share" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1730" y="940" width="340" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="end" value="END" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1840" y="1120" width="120" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Connectors -->
+        <mxCell id="e1" value="" style="endArrow=block;html=1;rounded=0;" edge="1" parent="1" source="start" target="landing"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="Create clinic" style="endArrow=block;html=1;" edge="1" parent="1" source="landing" target="onboarding"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" value="Login" style="endArrow=block;html=1;" edge="1" parent="1" source="landing" target="signin"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" value="Setup complete" style="endArrow=block;html=1;" edge="1" parent="1" source="onboarding" target="admin"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" value="Auth success" style="endArrow=block;html=1;" edge="1" parent="1" source="signin" target="admin"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e6" value="" style="endArrow=block;html=1;" edge="1" parent="1" source="admin" target="queueMgmt"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e7" value="" style="endArrow=block;html=1;" edge="1" parent="1" source="admin" target="doctors"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e8" value="" style="endArrow=block;html=1;" edge="1" parent="1" source="admin" target="analytics"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e9" value="" style="endArrow=block;html=1;" edge="1" parent="1" source="admin" target="billing"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e10" value="" style="endArrow=block;html=1;" edge="1" parent="1" source="admin" target="staff"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e11" value="Reception flow" style="endArrow=block;html=1;" edge="1" parent="1" source="queueMgmt" target="reception"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e12" value="Token + link sent" style="endArrow=block;html=1;" edge="1" parent="1" source="reception" target="patientPWA"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e13" value="Queue updates" style="endArrow=block;html=1;" edge="1" parent="1" source="reception" target="doctorDash"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e14" value="Call Next / Complete" style="endArrow=block;html=1;" edge="1" parent="1" source="doctorDash" target="rxEngine"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e15" value="Generate Rx" style="endArrow=block;html=1;" edge="1" parent="1" source="rxEngine" target="rxDelivery"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e16" value="Secure link" style="endArrow=block;html=1;" edge="1" parent="1" source="rxDelivery" target="vault"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e17" value="Set alerts" style="endArrow=block;html=1;" edge="1" parent="1" source="patientPWA" target="alerts"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e18" value="After consult" style="endArrow=block;html=1;" edge="1" parent="1" source="alerts" target="vault"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e19" value="Flow complete" style="endArrow=block;html=1;" edge="1" parent="1" source="vault" target="end"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
