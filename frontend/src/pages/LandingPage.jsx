@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-function LandingPage({ onLoginClick, authenticated, onLogout, user }) {
+function LandingPage({ onLoginClick, onMarketingClick, authenticated, onLogout, user }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-white text-slate-900 overflow-hidden">
       <div className="fixed inset-0 -z-10">
@@ -49,7 +49,9 @@ function LandingPage({ onLoginClick, authenticated, onLogout, user }) {
               <button className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-sky-700 to-indigo-600 px-8 py-3 text-base font-semibold text-white shadow-lg shadow-sky-500/20 transition duration-300 hover:from-sky-600 hover:to-indigo-500">
                 Get Started
               </button>
-              <button className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-8 py-3 text-base font-semibold text-slate-700 shadow-sm transition duration-300 hover:border-slate-300 hover:bg-slate-50">
+              <button
+                onClick={onMarketingClick}
+                 className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-8 py-3 text-base font-semibold text-slate-700 shadow-sm transition duration-300 hover:border-slate-300 hover:bg-slate-50">
                 View Services
               </button>
             </div>

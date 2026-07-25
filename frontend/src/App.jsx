@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from "react";
 import LandingPage from "./pages/LandingPage";
+import MarketingPage from "./pages/MarketingPage";
 import Auth from "./components/Auth";
 import api from "./api";
 
@@ -51,6 +52,7 @@ function App() {
       {route === 'landing' && (
         <LandingPage
           onLoginClick={() => setRoute('auth')}
+          onMarketingClick={() => setRoute('marketing')}
           authenticated={authenticated}
           onLogout={handleLogout}
           user={user}
@@ -60,6 +62,11 @@ function App() {
       {route === 'auth' && (
         <Auth onSuccess={handleLoginSuccess} onBack={() => setRoute('landing')} />
       )}
+
+      {route === 'marketing' && (
+        <MarketingPage onBack={() => setRoute('landing')} />
+      )}
+
     </div>
   );
 }
