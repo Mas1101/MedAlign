@@ -6,110 +6,141 @@ import {
   Ambulance,
   ClipboardList,
   Pill,
+  HeartPulse,
+  UserCheck,
+  Activity,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-function LandingPage() {
+function LandingPage({ onLoginClick, authenticated, onLogout, user }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50 to-gray-50 text-gray-900 overflow-hidden">
-      {/* Premium Glassmorphism Background Elements */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-white text-slate-900 overflow-hidden">
       <div className="fixed inset-0 -z-10">
-        {/* Main blur shapes */}
-        <div className="absolute top-20 right-0 w-96 h-96 bg-blue-300/15 rounded-full blur-4xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-200/15 rounded-full blur-4xl"></div>
-        
-        {/* Additional depth layers */}
-        <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-indigo-200/10 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/4 right-1/3 w-72 h-72 bg-blue-400/8 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/3 right-0 w-96 h-96 bg-purple-300/8 rounded-full blur-4xl"></div>
-        
-        {/* Subtle accent colors */}
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-100/5 to-transparent"></div>
+        <div className="absolute -left-32 top-28 h-80 w-80 rounded-full bg-sky-400/10 blur-3xl" />
+        <div className="absolute right-0 top-32 h-72 w-72 rounded-full bg-indigo-400/10 blur-3xl" />
+        <div className="absolute left-1/2 bottom-24 h-96 w-96 -translate-x-1/2 rounded-full bg-cyan-400/10 blur-3xl" />
+        <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-white to-transparent" />
       </div>
 
-      <Navbar />
+      <Navbar onLoginClick={onLoginClick} authenticated={authenticated} onLogout={onLogout} user={user} />
 
-
-      {/* Hero Section */}
-      <section className="px-8 py-32 bg-transparent relative mt-16">
-
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between">
-
-
-          {/* Hero Text */}
+      <section className="pt-28 pb-20">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 grid gap-16 lg:grid-cols-[1.05fr_0.95fr] items-center">
           <motion.div
-            className="md:w-1/2 text-center md:text-left"
-            initial={{ opacity: 0, x: -50 }}
+            className="space-y-8"
+            initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-
-
-
-            <h2 className="mt-5 text-3xl font-semibold text-gray-800">
-              Your Health, Connected Better
-            </h2>
-
-
-            <p className="mt-5 text-lg text-gray-600">
-              Find trusted doctors, book appointments, and manage your
-              healthcare journey with a smart digital platform.
-            </p>
-
-
-            <button className="mt-8 px-8 py-3 bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white font-semibold rounded-full text-lg transition duration-300 shadow-lg hover:shadow-2xl hover:shadow-blue-400/60 backdrop-blur-sm border border-blue-400/30">
-              Get Started
-            </button>
-
-
-          </motion.div>
-
-
-
-          {/* Hero Card */}
-          <motion.div
-            className="mt-12 md:mt-0 md:w-1/2 flex justify-center"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-          >
-
-            <div className="relative w-96 h-96 group">
-
-              <div className="relative w-full h-full rounded-3xl bg-gradient-to-br from-blue-50/80 to-blue-100/70 backdrop-blur-2xl border border-blue-300/50 shadow-2xl hover:shadow-3xl hover:shadow-blue-400/40 hover:border-blue-400/70 flex flex-col items-center justify-center transition duration-500 overflow-hidden">
-                {/* Glossy inner border effect */}
-                <div className="absolute inset-0 rounded-3xl border border-blue-200/50 pointer-events-none"></div>
-                {/* Soft glow effect */}
-                <div className="absolute -inset-1 rounded-3xl bg-gradient-to-br from-blue-400/10 to-blue-500/5 blur-xl -z-10"></div>
-
-                <Stethoscope className="text-blue-600 w-24 h-24 group-hover:text-blue-700 transition duration-500" />
-
-
-                <h3 className="mt-6 text-2xl font-bold text-gray-800">
-                  Smart Healthcare
-                </h3>
-
-
-                <p className="mt-3 text-center text-gray-600 px-8">
-                  Connect with doctors, manage appointments,
-                  and track your health easily.
-                </p>
-
-
-              </div>
-
-
+            <div className="inline-flex items-center gap-3 rounded-full bg-blue-100/80 px-4 py-2 text-sm font-semibold text-blue-700 ring-1 ring-blue-200">
+              <span className="h-2.5 w-2.5 rounded-full bg-blue-600" />
+              Trusted medical care for every patient
             </div>
 
+            <h1 className="max-w-2xl text-5xl sm:text-6xl font-semibold tracking-tight text-slate-900">
+              Healthcare services built around your comfort and wellness.
+            </h1>
 
+            <p className="max-w-xl text-lg leading-8 text-slate-600">
+              Discover a modern medical platform for appointments, digital consultations, and personalized care — all in one trusted healthcare experience.
+            </p>
+
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              <button className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-sky-700 to-indigo-600 px-8 py-3 text-base font-semibold text-white shadow-lg shadow-sky-500/20 transition duration-300 hover:from-sky-600 hover:to-indigo-500">
+                Get Started
+              </button>
+              <button className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-8 py-3 text-base font-semibold text-slate-700 shadow-sm transition duration-300 hover:border-slate-300 hover:bg-slate-50">
+                View Services
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+              <div className="rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm">
+                <p className="text-sm font-medium uppercase tracking-[0.3em] text-slate-500">Patients</p>
+                <p className="mt-4 text-3xl font-semibold text-slate-900">12K+</p>
+              </div>
+              <div className="rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm">
+                <p className="text-sm font-medium uppercase tracking-[0.3em] text-slate-500">Doctors</p>
+                <p className="mt-4 text-3xl font-semibold text-slate-900">150+</p>
+              </div>
+              <div className="hidden rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm sm:block">
+                <p className="text-sm font-medium uppercase tracking-[0.3em] text-slate-500">Satisfaction</p>
+                <p className="mt-4 text-3xl font-semibold text-slate-900">98%</p>
+              </div>
+            </div>
           </motion.div>
 
+          <motion.div
+            className="relative"
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="relative mx-auto max-w-xl overflow-hidden rounded-[2.5rem] border border-slate-200 bg-white/95 p-6 shadow-2xl shadow-slate-200/40 backdrop-blur-xl">
+              <div className="absolute -right-10 top-0 h-32 w-32 rounded-full bg-sky-100/80 blur-3xl"></div>
+              <div className="absolute -left-10 bottom-0 h-28 w-28 rounded-full bg-indigo-100/80 blur-3xl"></div>
 
+              <div className="relative rounded-[2rem] bg-slate-950/95 p-6 text-white overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.18),_transparent_40%)]" />
+                <div className="absolute -right-10 top-10 h-28 w-28 rounded-full bg-sky-500/40 blur-3xl"></div>
+                <div className="absolute left-0 top-0 h-48 w-48 rounded-full bg-indigo-400/20 blur-3xl"></div>
+
+                <div className="relative flex items-center justify-between">
+                  <div>
+                    <p className="text-sm uppercase tracking-[0.3em] text-slate-300">Appointment</p>
+                    <h2 className="mt-2 text-2xl font-semibold">Dr. Amelia Stone</h2>
+                  </div>
+                  <div className="rounded-3xl bg-slate-800/85 px-4 py-2 text-xs uppercase tracking-[0.25em] text-sky-200">
+                    Online Visit
+                  </div>
+                </div>
+
+                <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-3xl bg-slate-900/90 p-4">
+                    <p className="text-sm text-slate-400">Time</p>
+                    <p className="mt-2 text-lg font-semibold">09:30 AM</p>
+                  </div>
+                  <div className="rounded-3xl bg-slate-900/90 p-4">
+                    <p className="text-sm text-slate-400">Location</p>
+                    <p className="mt-2 text-lg font-semibold">Health Hub</p>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex items-center gap-4 rounded-3xl border border-white/10 bg-white/5 p-4">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-sky-500/10 text-sky-200">
+                    <HeartPulse className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-400">Live Consultation</p>
+                    <p className="mt-1 text-base font-semibold">Join now with a specialist</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                <div className="rounded-[2rem] bg-gradient-to-br from-sky-50 to-slate-100 p-5">
+                  <p className="text-sm font-medium text-slate-500">Completed Visits</p>
+                  <p className="mt-3 text-2xl font-bold text-slate-900">4.8K</p>
+                </div>
+                <div className="rounded-[2rem] bg-gradient-to-br from-indigo-50 to-slate-100 p-5">
+                  <p className="text-sm font-medium text-slate-500">Average Wait</p>
+                  <p className="mt-3 text-2xl font-bold text-slate-900">15 min</p>
+                </div>
+              </div>
+
+              <div className="mt-6 flex items-center justify-between gap-4 rounded-[2rem] bg-slate-50 p-5">
+                <div>
+                  <p className="text-sm text-slate-500">Patient Score</p>
+                  <p className="mt-2 text-xl font-semibold text-slate-900">4.9/5</p>
+                </div>
+                <button className="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/10">
+                  Book Now
+                </button>
+              </div>
+            </div>
+          </motion.div>
         </div>
-
       </section>
-
-
 
       {/* Features Section */}
       <section className="px-8 py-20 bg-transparent relative">
