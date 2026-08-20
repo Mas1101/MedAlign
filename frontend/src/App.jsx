@@ -1,11 +1,12 @@
 ﻿import { useEffect, useState } from "react";
 import LandingPage from "./pages/LandingPage";
 import MarketingPage from "./pages/MarketingPage";
+import AdminDashboard from "./pages/AdminDashboard";
 import Auth from "./components/Auth";
 import api from "./api";
 
 function App() {
-  const [route, setRoute] = useState("landing"); // landing | auth
+  const [route, setRoute] = useState("landing"); // landing | auth | marketing | admin
   const [authenticated, setAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -53,6 +54,7 @@ function App() {
         <LandingPage
           onLoginClick={() => setRoute('auth')}
           onMarketingClick={() => setRoute('marketing')}
+          onAdminClick={() => setRoute('admin')}
           authenticated={authenticated}
           onLogout={handleLogout}
           user={user}
@@ -65,6 +67,9 @@ function App() {
 
       {route === 'marketing' && (
         <MarketingPage onBack={() => setRoute('landing')} />
+      )}
+      {route === 'admin' && (
+       <AdminDashboard />
       )}
 
     </div>

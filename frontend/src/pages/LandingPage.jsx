@@ -12,7 +12,14 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-function LandingPage({ onLoginClick, onMarketingClick, authenticated, onLogout, user }) {
+function LandingPage({
+  onLoginClick,
+  onMarketingClick,
+  onAdminClick,
+  authenticated,
+  onLogout,
+  user,
+}) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-white text-slate-900 overflow-hidden">
       <div className="fixed inset-0 -z-10">
@@ -53,6 +60,11 @@ function LandingPage({ onLoginClick, onMarketingClick, authenticated, onLogout, 
                 onClick={onMarketingClick}
                  className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-8 py-3 text-base font-semibold text-slate-700 shadow-sm transition duration-300 hover:border-slate-300 hover:bg-slate-50">
                 View Services
+              </button>
+              <button
+                onClick={onAdminClick}
+                 className="inline-flex items-center justify-center rounded-full border border-blue-200 bg-blue-50 px-8 py-3 text-base font-semibold text-blue-700 shadow-sm transition duration-300 hover:border-blue-300 hover:bg-blue-100">
+                Admin Dashboard
               </button>
             </div>
 
