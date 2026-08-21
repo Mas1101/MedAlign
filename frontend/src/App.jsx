@@ -1,4 +1,5 @@
 ﻿import { useEffect, useState } from "react";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import MarketingPage from "./pages/MarketingPage";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -6,9 +7,9 @@ import Auth from "./components/Auth";
 import api from "./api";
 
 function App() {
-  const [route, setRoute] = useState("landing"); // landing | auth | marketing | admin
   const [authenticated, setAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -25,14 +26,14 @@ function App() {
     } else {
       setUser(null);
     }
-  }, [route]);
+  }, []);
 
   const handleLoginSuccess = (token, user) => {
     localStorage.setItem("access_token", token);
     localStorage.setItem("user", JSON.stringify(user));
     setAuthenticated(true);
     setUser(user);
-    setRoute("landing");
+    navigate("/");
   };
 
   const handleLogout = async () => {
@@ -45,32 +46,30 @@ function App() {
     localStorage.removeItem('user');
     setAuthenticated(false);
     setUser(null);
-    setRoute('landing');
+    navigate('/');
   };
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {route === 'landing' && (
-        <LandingPage
-          onLoginClick={() => setRoute('auth')}
-          onMarketingClick={() => setRoute('marketing')}
-          onAdminClick={() => setRoute('admin')}
-          authenticated={authenticated}
-          onLogout={handleLogout}
-          user={user}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <LandingPage
+              onLoginClick={() => navigate('/auth')}
+              onMarketingClick={() => navigate('/marketing')}
+              onAdminClick={() => navigate('/admin')}
+              authenticated={authenticated}
+              onLogout={handleLogout}
+              user={user}
+            />
+          }
         />
-      )}
-
-      {route === 'auth' && (
-        <Auth onSuccess={handleLoginSuccess} onBack={() => setRoute('landing')} />
-      )}
-
-      {route === 'marketing' && (
-        <MarketingPage onBack={() => setRoute('landing')} />
-      )}
-      {route === 'admin' && (
-       <AdminDashboard />
-      )}
+        <Route path="/auth" element={<Auth onSuccess={handleLoginSuccess} onBack={() => navigate('/')} />} />
+        <Route path="/marketing" element={<MarketingPage onBack={() => navigate('/')} />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
 
     </div>
   );
