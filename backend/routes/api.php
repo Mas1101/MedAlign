@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DoctorDashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,9 +17,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::get('/doctor/dashboard', [DoctorDashboardController::class, 'show']);
+Route::post('/doctor/queue/next', [DoctorDashboardController::class, 'callNext']);
+Route::patch('/doctor/queue/{token}', [DoctorDashboardController::class, 'updateStatus']);
 
 // Dummy CRUD operations for items using UsersController
 Route::get('/items', [UsersController::class, 'index']);

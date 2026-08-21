@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Login from './Login';
 import Register from './Register';
+import MedAlignBrand from './MedAlignBrand';
 
 const Auth = ({ onSuccess, onBack }) => {
   const [mode, setMode] = useState('login'); // login | register
@@ -13,9 +14,7 @@ const Auth = ({ onSuccess, onBack }) => {
             <h1 className="text-3xl font-bold">Sign in to MedAlign</h1>
             <p className="text-sm text-slate-500">Choose Login if you already have an account, or Sign Up to create one.</p>
           </div>
-          <div>
-            <button onClick={onBack} className="text-sm text-slate-600 hover:underline">Back</button>
-          </div>
+          <MedAlignBrand onClick={onBack} label="Return to previous page" />
         </div>
 
         <div className="bg-white rounded-2xl shadow p-6">

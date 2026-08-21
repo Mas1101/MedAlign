@@ -3,6 +3,8 @@ import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import MarketingPage from "./pages/MarketingPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import DoctorDashboard from "./pages/DoctorDashboard";
+import GetStartedPage from "./pages/GetStartedPage";
 import Auth from "./components/Auth";
 import api from "./api";
 
@@ -33,7 +35,7 @@ function App() {
     localStorage.setItem("user", JSON.stringify(user));
     setAuthenticated(true);
     setUser(user);
-    navigate("/");
+    navigate(user?.role === "doctor" ? "/doctor" : "/");
   };
 
   const handleLogout = async () => {
@@ -59,15 +61,33 @@ function App() {
               onLoginClick={() => navigate('/auth')}
               onMarketingClick={() => navigate('/marketing')}
               onAdminClick={() => navigate('/admin')}
+              onDoctorClick={() => navigate('/doctor')}
+              onGetStarted={() => navigate('/get-started')}
               authenticated={authenticated}
               onLogout={handleLogout}
               user={user}
             />
           }
         />
-        <Route path="/auth" element={<Auth onSuccess={handleLoginSuccess} onBack={() => navigate('/')} />} />
-        <Route path="/marketing" element={<MarketingPage onBack={() => navigate('/')} />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/auth" element={<Auth onSuccess={handleLoginSuccess} onBack={() => navigate(-1)} />} />
+        <Route path="/get-started" element={<GetStartedPage onBack={() => navigate(-1)} onDoctorClick={() => navigate('/doctor')} />} />
+        <Route
+          path="/marketing"
+          element={
+            <MarketingPage
+              onBack={() => navigate(-1)}
+              onAdminClick={() => navigate('/admin')}
+              onDoctorClick={() => navigate('/doctor')}
+            />
+          }
+        />
+        <Route path="/admin" element={<AdminDashboard onBack={() => navigate(-1)} />} />
+        <Route
+          path="/doctor"
+          element={
+            <DoctorDashboard user={user} onLogout={handleLogout} onBack={() => navigate(-1)} />
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 

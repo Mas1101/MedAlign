@@ -8,20 +8,19 @@ import {
   Stethoscope,
   Users,
 } from "lucide-react";
+import MedAlignBrand from "../components/MedAlignBrand";
 
-function AdminDashboard() {
+function AdminDashboard({ onBack }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-white text-slate-900">
       {/* Header */}
       <header className="border-b border-slate-200 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-10">
-          <div>
-            <p className="text-sm font-medium uppercase tracking-[0.25em] text-blue-600">
-              MedAlign
-            </p>
-            <h1 className="mt-1 text-3xl font-semibold tracking-tight">
-              Admin Dashboard
-            </h1>
+          <div className="flex items-center gap-4">
+            <MedAlignBrand onClick={onBack} label="Return to previous page" />
+            <div className="hidden border-l border-slate-200 pl-4 sm:block">
+              <h1 className="text-3xl font-semibold tracking-tight">Admin Dashboard</h1>
+            </div>
           </div>
 
           <div className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-100 text-blue-700">

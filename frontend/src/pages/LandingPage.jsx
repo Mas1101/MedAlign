@@ -16,6 +16,8 @@ function LandingPage({
   onLoginClick,
   onMarketingClick,
   onAdminClick,
+  onDoctorClick,
+  onGetStarted,
   authenticated,
   onLogout,
   user,
@@ -53,7 +55,7 @@ function LandingPage({
             </p>
 
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <button className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-sky-700 to-indigo-600 px-8 py-3 text-base font-semibold text-white shadow-lg shadow-sky-500/20 transition duration-300 hover:from-sky-600 hover:to-indigo-500">
+              <button onClick={onGetStarted} className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-sky-700 to-indigo-600 px-8 py-3 text-base font-semibold text-white shadow-lg shadow-sky-500/20 transition duration-300 hover:from-sky-600 hover:to-indigo-500">
                 Get Started
               </button>
               <button
@@ -65,6 +67,11 @@ function LandingPage({
                 onClick={onAdminClick}
                  className="inline-flex items-center justify-center rounded-full border border-blue-200 bg-blue-50 px-8 py-3 text-base font-semibold text-blue-700 shadow-sm transition duration-300 hover:border-blue-300 hover:bg-blue-100">
                 Admin Dashboard
+              </button>
+              <button
+                onClick={onDoctorClick}
+                className="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 px-8 py-3 text-base font-semibold text-emerald-700 shadow-sm transition duration-300 hover:border-emerald-300 hover:bg-emerald-100">
+                Doctor Dashboard
               </button>
             </div>
 
@@ -417,7 +424,7 @@ function LandingPage({
             </p>
 
 
-            <button className="mt-8 px-10 py-3 bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white font-bold rounded-full transition duration-300 shadow-lg hover:shadow-2xl hover:shadow-blue-400/60 backdrop-blur-sm border border-blue-400/30">
+            <button onClick={onGetStarted} className="mt-8 px-10 py-3 bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white font-bold rounded-full transition duration-300 shadow-lg hover:shadow-2xl hover:shadow-blue-400/60 backdrop-blur-sm border border-blue-400/30">
               Get Started
             </button>
           </div>

@@ -34,3 +34,20 @@ Make sure you have the following installed:
 ```bash
 git clone <repository-url>
 cd <project-folder>
+
+## Docker development
+
+From this directory, start the Laravel API and MySQL database with:
+
+```bash
+docker compose up --build
+```
+
+The API is available at `http://localhost:8000`. The first startup runs the
+migrations and seeds a doctor account for local testing:
+
+- Email: `doctor@medalign.test`
+- Password: `password`
+
+The React frontend runs separately from `../frontend` with `npm install` and
+`npm run dev`.

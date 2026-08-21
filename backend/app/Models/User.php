@@ -13,10 +13,12 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-        "id",
         'name',
         'email',
         'password',
+        'phone',
+        'role',
+        'clinic_id',
     ];
 
     /**
@@ -32,5 +34,10 @@ class User extends Authenticatable
     public function posts()
     {
         return $this->hasMany(Post::class); // One user has many posts
+    }
+
+    public function doctor()
+    {
+        return $this->hasOne(Doctor::class);
     }
 }
