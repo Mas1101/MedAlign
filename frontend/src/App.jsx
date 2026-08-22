@@ -10,6 +10,7 @@ import GetStartedPage from "./pages/GetStartedPage";
 import PatientPage from "./pages/PatientPage";
 import Auth from "./components/Auth";
 import DoctorAuth from "./components/DoctorAuth";
+import AdminAuth from "./components/AdminAuth";
 import ProtectedRoute from "./components/ProtectedRoute";
 import api from "./api";
 
@@ -42,7 +43,7 @@ class ErrorBoundary extends React.Component {
                 localStorage.clear();
                 window.location.href = "/";
               }}
-              className="px-5 py-2.5 bg-sky-600 text-white text-sm font-semibold rounded-xl hover:bg-sky-700 transition"
+              className="px-5 py-2.5 bg-sky-600 text-white text-sm font-semibold rounded-xl hover:bg-sky-700 transition cursor-pointer"
             >
               Reset Session &amp; Reload
             </button>
@@ -133,35 +134,64 @@ function App() {
             }
           />
 
-          {/* Login pages — redirect already-logged-in users to their dashboard */}
+          {/* Patient Login & Registration (strictly role: patient) */}
           <Route
             path="/auth"
             element={
-              authenticated ? (
+              authenticated && user?.role === "patient" ? (
+                <Navigate to="/patient" replace />
+              ) : authenticated ? (
                 <Navigate
-                  to={
-                    user?.role === "doctor"
-                      ? "/doctor"
-                      : user?.role === "admin"
-                      ? "/admin"
-                      : "/patient"
-                  }
+                  to={user?.role === "doctor" ? "/doctor" : "/admin"}
                   replace
                 />
               ) : (
-                <Auth onSuccess={handleLoginSuccess} onBack={() => navigate("/")} />
+                <Auth
+                  onSuccess={handleLoginSuccess}
+                  onBack={() => navigate("/")}
+                  defaultRole="patient"
+                  lockRole={true}
+                />
               )
             }
           />
+
+          {/* Doctor Login & Registration (strictly role: doctor) */}
           <Route
             path="/doctor-auth"
             element={
               authenticated && user?.role === "doctor" ? (
                 <Navigate to="/doctor" replace />
               ) : (
-                <DoctorAuth onSuccess={handleLoginSuccess} onBack={() => navigate("/")} />
+                <DoctorAuth
+                  onSuccess={handleLoginSuccess}
+                  onBack={() => navigate("/")}
+                />
               )
             }
+          />
+          <Route
+            path="/doctor/login"
+            element={<Navigate to="/doctor-auth" replace />}
+          />
+
+          {/* Admin Login (strictly role: admin via dedicated /admin/login or /admin-auth) */}
+          <Route
+            path="/admin/login"
+            element={
+              authenticated && user?.role === "admin" ? (
+                <Navigate to="/admin" replace />
+              ) : (
+                <AdminAuth
+                  onSuccess={handleLoginSuccess}
+                  onBack={() => navigate("/")}
+                />
+              )
+            }
+          />
+          <Route
+            path="/admin-auth"
+            element={<Navigate to="/admin/login" replace />}
           />
 
           <Route
@@ -195,7 +225,7 @@ function App() {
             }
           />
 
-          {/* ── Protected: Admin only ──────────────────────────────────────── */}
+          {/* ── Protected: Admin only (unauthenticated users redirect to /admin/login) ── */}
           <Route
             path="/admin"
             element={
@@ -203,14 +233,14 @@ function App() {
                 authenticated={authenticated}
                 user={user}
                 allowedRoles={["admin"]}
-                loginPath="/auth"
+                loginPath="/admin/login"
               >
                 <AdminDashboard onBack={() => navigate("/")} onLogout={handleLogout} />
               </ProtectedRoute>
             }
           />
 
-          {/* ── Protected: Doctor only ─────────────────────────────────────── */}
+          {/* ── Protected: Doctor only (unauthenticated users redirect to /doctor-auth) ── */}
           <Route
             path="/doctor"
             element={
@@ -229,7 +259,7 @@ function App() {
             }
           />
 
-          {/* ── Protected: Patient (and admin can view too for support) ───── */}
+          {/* ── Protected: Patient Portal (unauthenticated users redirect to /auth) ── */}
           <Route
             path="/patient"
             element={
