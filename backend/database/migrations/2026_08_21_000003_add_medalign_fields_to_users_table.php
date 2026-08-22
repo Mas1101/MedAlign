@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('clinic_id')->nullable()->after('id')->constrained('clinics', 'clinic_id')->nullOnDelete();
             $table->string('phone', 20)->nullable()->after('email');
-            $table->enum('role', ['admin', 'doctor', 'reception'])->default('reception')->after('phone');
+            $table->enum('role', ['admin', 'doctor', 'reception', 'patient'])->default('patient')->after('phone');
         });
     }
 

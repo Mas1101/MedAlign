@@ -16,6 +16,11 @@ function LandingPage({
   onLoginClick,
   onMarketingClick,
   onAdminClick,
+  onPatientClick,
+  onDoctorClick,
+  onDoctorsClick,
+  onContactClick,
+  onGetStarted,
   authenticated,
   onLogout,
   user,
@@ -29,7 +34,17 @@ function LandingPage({
         <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-white to-transparent" />
       </div>
 
-      <Navbar onLoginClick={onLoginClick} authenticated={authenticated} onLogout={onLogout} user={user} />
+      <Navbar
+        onLoginClick={onLoginClick}
+        onDoctorClick={onDoctorClick}
+        onAdminClick={onAdminClick}
+        onPatientClick={onPatientClick}
+        onContactClick={onContactClick}
+        onMarketingClick={onMarketingClick}
+        authenticated={authenticated}
+        onLogout={onLogout}
+        user={user}
+      />
 
       <section className="pt-28 pb-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 grid gap-16 lg:grid-cols-[1.05fr_0.95fr] items-center">
@@ -40,31 +55,54 @@ function LandingPage({
             transition={{ duration: 0.8 }}
           >
             <div className="inline-flex items-center gap-3 rounded-full bg-blue-100/80 px-4 py-2 text-sm font-semibold text-blue-700 ring-1 ring-blue-200">
-              <span className="h-2.5 w-2.5 rounded-full bg-blue-600" />
-              Trusted medical care for every patient
+              <span className="h-2.5 w-2.5 rounded-full bg-blue-600 animate-pulse" />
+              Next-Generation Clinical Queue & Medical Vault
             </div>
 
-            <h1 className="max-w-2xl text-5xl sm:text-6xl font-semibold tracking-tight text-slate-900">
-              Healthcare services built around your comfort and wellness.
+            <h1 className="max-w-2xl text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900">
+              Healthcare coordination built for clinicians, patients & clinics.
             </h1>
 
-            <p className="max-w-xl text-lg leading-8 text-slate-600">
-              Discover a modern medical platform for appointments, digital consultations, and personalized care — all in one trusted healthcare experience.
+            <p className="max-w-xl text-base sm:text-lg leading-relaxed text-slate-600">
+              Real-time outpatient queue dispatch, OTP-verified access, digital prescription vaults, and multi-department analytics in one unified platform.
             </p>
 
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <button className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-sky-700 to-indigo-600 px-8 py-3 text-base font-semibold text-white shadow-lg shadow-sky-500/20 transition duration-300 hover:from-sky-600 hover:to-indigo-500">
-                Get Started
+            <div className="flex flex-wrap gap-3 items-center">
+              <button
+                onClick={onGetStarted}
+                className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-sky-700 to-indigo-600 hover:from-sky-600 hover:to-indigo-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-sky-500/20 transition duration-300 cursor-pointer"
+              >
+                <HeartPulse className="h-5 w-5" /> Get Started
+              </button>
+              <button
+                onClick={onPatientClick}
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 px-5 py-3 text-sm font-bold text-emerald-800 shadow-sm transition duration-300 cursor-pointer"
+              >
+                <UserCheck className="h-4 w-4 text-emerald-700" /> Patient Portal (PWA)
+              </button>
+              <button
+                onClick={onDoctorClick}
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-sky-300 bg-sky-50 hover:bg-sky-100 px-5 py-3 text-sm font-bold text-sky-800 shadow-sm transition duration-300 cursor-pointer"
+              >
+                <Activity className="h-4 w-4 text-sky-700" /> Doctor Workspace
+              </button>
+              <button
+                onClick={onDoctorsClick}
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white hover:bg-slate-50 px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition duration-300 cursor-pointer"
+              >
+                <Stethoscope className="h-4 w-4 text-slate-500" /> Specialists
               </button>
               <button
                 onClick={onMarketingClick}
-                 className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-8 py-3 text-base font-semibold text-slate-700 shadow-sm transition duration-300 hover:border-slate-300 hover:bg-slate-50">
-                View Services
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-amber-200 bg-amber-50 hover:bg-amber-100 px-5 py-3 text-sm font-bold text-amber-800 shadow-sm transition duration-300 cursor-pointer"
+              >
+                <CalendarDays className="h-4 w-4 text-amber-600" /> Services
               </button>
               <button
                 onClick={onAdminClick}
-                 className="inline-flex items-center justify-center rounded-full border border-blue-200 bg-blue-50 px-8 py-3 text-base font-semibold text-blue-700 shadow-sm transition duration-300 hover:border-blue-300 hover:bg-blue-100">
-                Admin Dashboard
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 px-5 py-3 text-sm font-bold text-indigo-700 shadow-sm transition duration-300 cursor-pointer"
+              >
+                <ShieldCheck className="h-4 w-4 text-indigo-600" /> Admin Console
               </button>
             </div>
 
@@ -147,7 +185,7 @@ function LandingPage({
                   <p className="text-sm text-slate-500">Patient Score</p>
                   <p className="mt-2 text-xl font-semibold text-slate-900">4.9/5</p>
                 </div>
-                <button className="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/10">
+                <button onClick={onGetStarted} className="rounded-full bg-slate-900 hover:bg-sky-700 px-5 py-3 text-xs font-bold text-white shadow-lg shadow-slate-900/10 transition cursor-pointer">
                   Book Now
                 </button>
               </div>
@@ -417,7 +455,10 @@ function LandingPage({
             </p>
 
 
-            <button className="mt-8 px-10 py-3 bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white font-bold rounded-full transition duration-300 shadow-lg hover:shadow-2xl hover:shadow-blue-400/60 backdrop-blur-sm border border-blue-400/30">
+            <button
+              onClick={onGetStarted}
+              className="mt-8 px-10 py-3 bg-gradient-to-r from-sky-700 to-indigo-600 hover:from-sky-600 hover:to-indigo-500 text-white font-bold rounded-full transition duration-300 shadow-lg hover:shadow-2xl hover:shadow-sky-400/60 backdrop-blur-sm border border-sky-400/30 cursor-pointer"
+            >
               Get Started
             </button>
           </div>
@@ -444,6 +485,7 @@ function LandingPage({
             <h2 style={{
               background: 'linear-gradient(to right, #1e40af, #3b82f6)',
               WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
               backgroundSize: '200% 100%',
               backgroundPosition: '0% 0%',
@@ -471,12 +513,43 @@ function LandingPage({
             </h3>
 
 
-            <ul className="mt-4 space-y-3 text-gray-600">
+            <ul className="mt-4 space-y-3 text-gray-600 text-sm">
 
-              <li className="hover:text-blue-700 cursor-pointer transition">Home</li>
-              <li className="hover:text-blue-700 cursor-pointer transition">Services</li>
-              <li className="hover:text-blue-700 cursor-pointer transition">About</li>
-              <li className="hover:text-blue-700 cursor-pointer transition">Contact</li>
+              <li>
+                <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-blue-700 cursor-pointer transition">
+                  Home
+                </button>
+              </li>
+              <li>
+                <button onClick={onPatientClick} className="hover:text-emerald-700 font-semibold cursor-pointer transition">
+                  Patient Portal (PWA)
+                </button>
+              </li>
+              <li>
+                <button onClick={onDoctorClick} className="hover:text-blue-700 font-semibold cursor-pointer transition">
+                  Doctor Workspace
+                </button>
+              </li>
+              <li>
+                <button onClick={onAdminClick} className="hover:text-blue-700 font-semibold cursor-pointer transition">
+                  Admin Console
+                </button>
+              </li>
+              <li>
+                <button onClick={onDoctorsClick} className="hover:text-blue-700 cursor-pointer transition">
+                  Specialists Directory
+                </button>
+              </li>
+              <li>
+                <button onClick={onMarketingClick} className="hover:text-blue-700 cursor-pointer transition">
+                  Services
+                </button>
+              </li>
+              <li>
+                <button onClick={onContactClick} className="hover:text-blue-700 cursor-pointer transition">
+                  Contact & Support
+                </button>
+              </li>
 
             </ul>
 

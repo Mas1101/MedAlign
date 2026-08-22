@@ -1,0 +1,25 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: medalign_db_3307
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: medalign_db
+      MYSQL_ROOT_PASSWORD: medalign_secret
+      MYSQL_USER: medalign_user
+      MYSQL_PASSWORD: medalign_password
+    volumes:
+      - medalign_dbdata:/var/lib/mysql
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: medalign_mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+volumes:
+  medalign_dbdata:
+    driver: local

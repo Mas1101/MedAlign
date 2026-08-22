@@ -1,7 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { Menu, X, Stethoscope, ShieldCheck, UserRound, Phone, HelpCircle, LayoutDashboard, LogOut } from 'lucide-react';
+import MedAlignBrand from './MedAlignBrand';
 
-function Navbar({ onLoginClick, authenticated, onLogout, user }) {
+function Navbar({ onLoginClick, onDoctorClick, onAdminClick, onPatientClick, onContactClick, onMarketingClick, authenticated, onLogout, user }) {
   const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const ref = useRef(null);
 
   const profileName = user
@@ -13,17 +17,7 @@ function Navbar({ onLoginClick, authenticated, onLogout, user }) {
       )
     : 'User';
 
-  const profileAddress = user
-    ? (
-        user.address ||
-        user.main_address ||
-        user.address_line ||
-        user.location ||
-        user.email ||
-        'User'
-      )
-    : 'User';
-
+  const profileRole = user?.role ? user.role.toUpperCase() : 'USER';
   const profileInitial = profileName.charAt(0).toUpperCase();
 
   useEffect(() => {
@@ -35,98 +29,136 @@ function Navbar({ onLoginClick, authenticated, onLogout, user }) {
   }, []);
 
   return (
-    <nav className="fixed w-full top-0 z-50 bg-white/95 backdrop-blur-2xl border-b border-blue-100 px-8 py-4 shadow-sm hover:shadow-md transition-shadow">
-
-      <div className="max-w-6xl mx-auto flex items-center justify-between">
-
-        {/* Logo */}
-        <h1 style={{
-          background: 'linear-gradient(to right, #1e40af, #3b82f6)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          backgroundSize: '200% 100%',
-          backgroundPosition: '0% 0%',
-          display: 'inline-block'
-        }} className="text-2xl font-bold">
-          MedAlign
-        </h1>
-
-
-        {/* Navigation Links */}
-        <div className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
-
-          <a
-            href="#"
-            className="hover:text-blue-700 transition duration-300 relative group"
+    <nav className="fixed w-full top-0 z-50 bg-white/95 backdrop-blur-2xl border-b border-blue-100 px-6 sm:px-8 py-3.5 shadow-sm hover:shadow-md transition-shadow">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        {/* Mobile menu trigger + Logo */}
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setMenuOpen((isOpen) => !isOpen)}
+            aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
+            className="lg:hidden inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer"
           >
-            Home
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-blue-400 group-hover:w-full transition-all duration-300"></span>
-          </a>
-
-          <a
-            href="#"
-            className="hover:text-blue-700 transition duration-300 relative group"
-          >
-            Doctors
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-blue-400 group-hover:w-full transition-all duration-300"></span>
-          </a>
-
-          <a
-            href="#"
-            className="hover:text-blue-700 transition duration-300 relative group"
-          >
-            Services
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-blue-400 group-hover:w-full transition-all duration-300"></span>
-          </a>
-
-          <a
-            href="#"
-            className="hover:text-blue-700 transition duration-300 relative group"
-          >
-            Contact
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-blue-400 group-hover:w-full transition-all duration-300"></span>
-          </a>
-
+            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+          <Link to="/" className="flex items-center gap-2">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-600 text-white shadow-md shadow-sky-500/20">
+              <Stethoscope className="h-5 w-5" />
+            </span>
+            <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-sky-700 to-indigo-700 bg-clip-text text-transparent">
+              MedAlign
+            </span>
+          </Link>
         </div>
 
+        {/* Desktop Navigation Links */}
+        <div className="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-600">
+          <Link to="/" className="hover:text-sky-700 transition">Home</Link>
+          <Link to="/patient" className="text-emerald-700 hover:text-emerald-800 transition font-bold flex items-center gap-1.5 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+            <UserRound className="h-3.5 w-3.5" /> Patient Portal
+          </Link>
+          <Link to="/doctors" className="hover:text-sky-700 transition">Specialists</Link>
+          <Link to="/marketing" className="hover:text-sky-700 transition">Services</Link>
+          <Link to="/admin" className="hover:text-sky-700 transition flex items-center gap-1">
+            <ShieldCheck className="h-4 w-4 text-indigo-600" /> Admin
+          </Link>
+          <Link to="/contact" className="hover:text-sky-700 transition">Contact</Link>
+        </div>
 
         {/* Login / Profile */}
-        {authenticated ? (
-          <div className="relative" ref={ref}>
-            <button
-              onClick={() => setOpen((s) => !s)}
-              className="inline-flex items-center gap-3 rounded-full px-3 py-1.5 bg-white border border-slate-200 shadow-sm hover:shadow-md cursor-pointer"
-            >
-              <div className="h-8 w-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-semibold">
-                {profileInitial}
-              </div>
-              <div className="text-left">
-                <div className="text-sm font-semibold text-slate-900">{profileName}</div>
-                <div className="text-xs text-slate-500">{profileAddress}</div>
-              </div>
-            </button>
-
-            {open && (
-              <div className="absolute right-0 mt-2 w-56 rounded-lg border border-slate-200 bg-white shadow-lg p-3 z-50">
-                <div className="px-2 py-2">
-                  <div className="text-sm font-semibold text-slate-900">{profileName}</div>
-                  <div className="text-xs text-slate-500">{profileAddress}</div>
+        <div className="flex items-center gap-3">
+          {authenticated ? (
+            <div className="relative" ref={ref}>
+              <button
+                onClick={() => setOpen((s) => !s)}
+                className="inline-flex items-center gap-2.5 rounded-full pl-2 pr-4 py-1.5 bg-slate-50 border border-slate-200 shadow-sm hover:bg-slate-100 transition cursor-pointer"
+              >
+                <div className="h-7 w-7 rounded-full bg-gradient-to-tr from-sky-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs">
+                  {profileInitial}
                 </div>
-                <div className="mt-2 border-t border-slate-100 pt-2">
-                  <button onClick={onLogout} className="w-full text-left text-sm text-red-600 hover:text-red-700">Logout</button>
+                <div className="text-left hidden sm:block">
+                  <div className="text-xs font-bold text-slate-900 leading-tight">{profileName}</div>
+                  <div className="text-[10px] font-semibold text-sky-700">{profileRole}</div>
                 </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          <button onClick={onLoginClick} className="px-6 py-2 rounded-full bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white font-semibold transition duration-300 shadow-md hover:shadow-lg hover:shadow-blue-300/50">
-            Login
-          </button>
-        )}
+              </button>
 
+              {open && (
+                <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200 bg-white shadow-xl p-3 z-50">
+                  <div className="px-3 py-2 border-b border-slate-100">
+                    <div className="text-sm font-bold text-slate-900">{profileName}</div>
+                    <div className="text-xs font-medium text-slate-500">{user?.email}</div>
+                    <span className="inline-block mt-1 text-[10px] font-extrabold uppercase bg-sky-100 text-sky-800 px-2 py-0.5 rounded-full">
+                      {profileRole}
+                    </span>
+                  </div>
+                  <div className="mt-2 space-y-1">
+                    <Link to="/patient" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+                      <UserRound className="h-3.5 w-3.5 text-emerald-600" /> Patient Portal
+                    </Link>
+                    <Link to="/doctor" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+                      <Stethoscope className="h-3.5 w-3.5 text-emerald-600" /> Doctor Workspace
+                    </Link>
+                    <Link to="/admin" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+                      <LayoutDashboard className="h-3.5 w-3.5 text-indigo-600" /> Admin Console
+                    </Link>
+                  </div>
+                  <div className="mt-2 border-t border-slate-100 pt-2">
+                    <button onClick={onLogout} className="w-full flex items-center gap-2 px-3 py-2 text-left text-xs font-bold text-red-600 hover:bg-red-50 rounded-xl cursor-pointer">
+                      <LogOut className="h-3.5 w-3.5" /> Sign Out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link
+                to="/doctor-auth"
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold transition"
+              >
+                <Stethoscope className="h-3.5 w-3.5" /> Doctor Login
+              </Link>
+              <button
+                onClick={onLoginClick}
+                className="px-5 py-2 rounded-full bg-gradient-to-r from-sky-700 to-indigo-600 hover:from-sky-600 hover:to-indigo-500 text-white text-xs font-bold transition shadow-md shadow-sky-500/20 cursor-pointer"
+              >
+                Sign In
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
+      {/* Mobile Drawer */}
+      <div
+        className={`fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-sm transition-opacity duration-300 ${menuOpen ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+        onClick={() => setMenuOpen(false)}
+      />
+
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 flex h-screen w-80 max-w-[85vw] flex-col overflow-y-auto border-r border-slate-200 bg-white px-6 py-6 shadow-2xl transition-transform duration-300 ease-out ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`}
+      >
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+          <MedAlignBrand onClick={() => setMenuOpen(false)} />
+          <button
+            type="button"
+            onClick={() => setMenuOpen(false)}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 cursor-pointer"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <div className="mt-6 space-y-1.5 text-sm font-semibold">
+          <Link to="/" onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 text-slate-700 hover:bg-sky-50 hover:text-sky-700">Home</Link>
+          <Link to="/patient" onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 bg-emerald-50 text-emerald-800 font-bold">Patient Portal (PWA)</Link>
+          <Link to="/doctor" onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 text-emerald-700 hover:bg-emerald-50 font-bold">Doctor Workspace</Link>
+          <Link to="/admin" onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 text-indigo-700 hover:bg-indigo-50 font-bold">Admin Console</Link>
+          <Link to="/doctors" onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 text-slate-700 hover:bg-slate-50">Specialists Directory</Link>
+          <Link to="/marketing" onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 text-slate-700 hover:bg-slate-50">Platform Services</Link>
+          <Link to="/contact" onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 text-slate-700 hover:bg-slate-50">Contact & Support</Link>
+        </div>
+      </aside>
     </nav>
   );
 }
