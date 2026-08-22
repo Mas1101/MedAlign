@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import api from '../api';
+import { UserRound, Stethoscope, ShieldCheck, Building2 } from 'lucide-react';
 
-const Login = ({ onSuccess, onRequireOtp }) => {
+const Login = ({ onSuccess, onRequireOtp, roleContext = null, title = null, subtitle = null }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -18,13 +19,13 @@ const Login = ({ onSuccess, onRequireOtp }) => {
         password,
       });
 
-      const { access_token, user } = response.data;
+      const { access_token, user, redirect_url } = response.data;
 
       setEmail('');
       setPassword('');
       setError('');
 
-      if (onSuccess) onSuccess(access_token, user);
+      if (onSuccess) onSuccess(access_token, user, redirect_url);
     } catch (err) {
       if (err.response && err.response.data) {
         if (err.response.data.requires_otp) {
@@ -42,10 +43,36 @@ const Login = ({ onSuccess, onRequireOtp }) => {
     }
   };
 
+  const getRoleBadge = (r) => {
+    switch (r) {
+      case 'doctor':
+        return { label: 'Doctor Portal', icon: <Stethoscope className="h-3.5 w-3.5" />, color: 'bg-emerald-50 text-emerald-800 border-emerald-200' };
+      case 'admin':
+        return { label: 'Admin Console', icon: <ShieldCheck className="h-3.5 w-3.5" />, color: 'bg-indigo-50 text-indigo-800 border-indigo-200' };
+      case 'reception':
+        return { label: 'Receptionist Desk', icon: <Building2 className="h-3.5 w-3.5" />, color: 'bg-sky-50 text-sky-800 border-sky-200' };
+      case 'patient':
+        return { label: 'Patient Portal', icon: <UserRound className="h-3.5 w-3.5" />, color: 'bg-teal-50 text-teal-800 border-teal-200' };
+      default:
+        return null;
+    }
+  };
+
+  const badge = getRoleBadge(roleContext);
+
   return (
     <div className="max-w-md mx-auto p-6 rounded-3xl bg-white shadow-xl shadow-slate-200 border border-slate-100">
-      <h2 className="text-2xl font-bold text-slate-900 mb-2">Sign in to MedAlign</h2>
-      <p className="text-xs text-slate-500 mb-6">Enter your credentials to access your administrative, doctor, or receptionist portal.</p>
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-2xl font-bold text-slate-900">{title || 'Sign In to MedAlign'}</h2>
+        {badge && (
+          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${badge.color}`}>
+            {badge.icon} {badge.label}
+          </span>
+        )}
+      </div>
+      <p className="text-xs text-slate-500 mb-6">
+        {subtitle || 'Enter your email or phone to access your verified healthcare portal.'}
+      </p>
       
       {error && <div className="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{error}</div>}
       
@@ -57,7 +84,7 @@ const Login = ({ onSuccess, onRequireOtp }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            placeholder="name@clinic.org or +1 (555) ..."
+            placeholder="your.email@example.com or +1 (555) ..."
             className="mt-1 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100"
           />
         </label>

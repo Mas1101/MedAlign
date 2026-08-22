@@ -146,6 +146,28 @@ class AuthController extends Controller
         if ($user) {
             $user->email_verified_at = now();
             $user->save();
+
+            // Auto-provision corresponding domain entity based on role in MySQL database
+            if ($user->role === 'doctor') {
+                \App\Models\Doctor::firstOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'clinic_id' => $user->clinic_id ?? 1,
+                        'specialization' => 'General Medicine',
+                        'avg_consult_min' => 15,
+                        'availability_status' => 'available',
+                    ]
+                );
+            } elseif ($user->role === 'patient') {
+                \App\Models\Patient::firstOrCreate(
+                    ['email' => $user->email],
+                    [
+                        'name' => $user->name,
+                        'phone' => $user->phone ?? '+1 555 0100',
+                        'gender' => 'Other',
+                    ]
+                );
+            }
         } else {
             return response()->json(['success' => false, 'message' => 'User account not found.'], 404);
         }
@@ -158,7 +180,7 @@ class AuthController extends Controller
             'message' => 'Email verified successfully!',
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user' => $user->load('clinic'),
+            'user' => $user->load(['clinic', 'doctor']),
             'redirect_url' => $this->getRoleRedirect($user->role),
         ]);
     }
