@@ -98,6 +98,7 @@ function AdminDashboard({ onBack, onLogout }) {
             >
               <RefreshCw className={`h-3.5 w-3.5 ${isRefreshing ? 'animate-spin text-sky-600' : ''}`} />
               <span>{isRefreshing ? 'Refreshing...' : 'Refresh Metrics'}</span>
+            </button>
             {onLogout && (
               <button
                 onClick={onLogout}
