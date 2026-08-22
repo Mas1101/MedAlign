@@ -24,7 +24,7 @@ const Auth = ({ onSuccess, onBack, defaultRole = null, lockRole = false }) => {
     setOtpType(type);
     setMode('otp');
     setError('');
-    setMessage(`A 6-digit verification code has been dispatched to ${email}. Check your email or Mailpit (http://localhost:8025).`);
+    setMessage(`A 6-digit verification code has been dispatched to ${email}. Please check your inbox.`);
   };
 
   const handleVerifyOtp = async (e) => {
@@ -60,7 +60,7 @@ const Auth = ({ onSuccess, onBack, defaultRole = null, lockRole = false }) => {
         email: otpEmail,
         type: otpType,
       });
-      setMessage(`Fresh OTP code resent to ${otpEmail}. Check Mailpit (http://localhost:8025) or your inbox.`);
+      setMessage(`A fresh OTP code has been resent to ${otpEmail}.`);
     } catch (err) {
       setError('Unable to resend OTP code.');
     }
@@ -184,21 +184,6 @@ const Auth = ({ onSuccess, onBack, defaultRole = null, lockRole = false }) => {
                   {message}
                 </div>
               )}
-
-              <div className="flex items-center justify-between bg-sky-50 border border-sky-200 rounded-2xl p-3 text-xs text-sky-800">
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <span>Mailpit Virtual Inbox:</span>
-                </div>
-                <a
-                  href="http://localhost:8025"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-bold underline text-sky-900 hover:text-sky-700"
-                >
-                  View Sent Code (localhost:8025) ↗
-                </a>
-              </div>
 
               {error && (
                 <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-xs text-red-700 font-medium">
