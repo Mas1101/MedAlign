@@ -13,141 +13,252 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Subscription Plans
-        $planId = DB::table('subscription_plans')->insertGetId([
-            'name' => 'Clinic Pro',
-            'price' => 149.00,
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // Wipe tables for a clean re-seed
+        foreach ([
+            'prescription_items','prescriptions','prescription_templates',
+            'alert_preferences','queue_tokens','doctor_schedules',
+            'counters','doctors','daily_analytics','invoices',
+            'clinics','subscription_plans','patients',
+        ] as $t) {
+            DB::table($t)->truncate();
+        }
+        User::whereIn('role', ['admin','doctor','reception'])->delete();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        // ── 1. Subscription Plans ─────────────────────────────────────────
+        $planStarter = DB::table('subscription_plans')->insertGetId([
+            'name'          => 'Starter',
+            'price'         => 49.00,
             'billing_cycle' => 'monthly',
-            'max_doctors' => 25,
-            'features' => 'Queue management, prescriptions, analytics',
+            'max_doctors'   => 5,
+            'features'      => 'Basic queue, 1 counter, email alerts',
         ]);
 
-        // 2. Clinics
-        $clinicId = DB::table('clinics')->insertGetId([
-            'plan_id' => $planId,
-            'name' => 'MedAlign Health Centre',
+        $planPro = DB::table('subscription_plans')->insertGetId([
+            'name'          => 'Clinic Pro',
+            'price'         => 149.00,
+            'billing_cycle' => 'monthly',
+            'max_doctors'   => 25,
+            'features'      => 'Queue management, prescriptions, analytics, multi-doctor',
+        ]);
+
+        // ── 2. Clinics ────────────────────────────────────────────────────
+        $mainClinic = DB::table('clinics')->insertGetId([
+            'plan_id' => $planPro,
+            'name'    => 'MedAlign Health Centre',
             'address' => '24 Crescent Road, Health District',
-            'phone' => '+1 555 0100',
-            'email' => 'hello@medalign.test',
-            'status' => 'active',
+            'phone'   => '+1 555 0100',
+            'email'   => 'hello@medalign.test',
+            'status'  => 'active',
         ]);
 
-        // 3. Admin User
-        User::firstOrCreate(
-            ['email' => 'admin@medalign.test'],
-            [
-                'name' => 'Dr. Alexander Vance',
-                'password' => Hash::make('password'),
-                'role' => 'admin',
-                'clinic_id' => $clinicId,
-                'email_verified_at' => now(),
-            ]
-        );
-
-        // 4. Doctor User & Profile
-        $doctorUser = User::firstOrCreate(
-            ['email' => 'doctor@medalign.test'],
-            [
-                'name' => 'Dr. Sarah Ahmed',
-                'password' => Hash::make('password'),
-                'role' => 'doctor',
-                'clinic_id' => $clinicId,
-                'email_verified_at' => now(),
-            ]
-        );
-
-        $doctor = Doctor::firstOrCreate(
-            ['user_id' => $doctorUser->id],
-            [
-                'clinic_id' => $clinicId,
-                'specialization' => 'Cardiology',
-                'avg_consult_min' => 15,
-                'availability_status' => 'available',
-            ]
-        );
-
-        // 5. Counters
-        $counterId = DB::table('counters')->insertGetId([
-            'clinic_id' => $clinicId,
-            'counter_number' => 1,
-            'counter_name' => 'Room 101',
+        $branchClinic = DB::table('clinics')->insertGetId([
+            'plan_id' => $planStarter,
+            'name'    => 'MedAlign Branch — Eastside',
+            'address' => '78 Lakeside Avenue, Eastside',
+            'phone'   => '+1 555 0200',
+            'email'   => 'east@medalign.test',
+            'status'  => 'active',
         ]);
 
-        // 6. Patients & Queue Tokens
-        $patientsData = [
-            ['Amina Yusuf', '+1 555 0101', '1988-04-12', 'amina@test.org', 'Female'],
-            ['Michael Chen', '+1 555 0102', '1979-11-03', 'michael@test.org', 'Male'],
-            ['Priya Nair', '+1 555 0103', '1994-07-28', 'priya@test.org', 'Female'],
-            ['Jon Bell', '+1 555 0104', '1967-02-16', 'jon@test.org', 'Male'],
-            ['Lina Gomez', '+1 555 0105', '1982-09-08', 'lina@test.org', 'Female'],
-            ['Noah Williams', '+1 555 0106', '1990-01-21', 'noah@test.org', 'Male'],
+        // ── 3. Admin User ──────────────────────────────────────────────────
+        User::firstOrCreate(['email' => 'admin@medalign.test'], [
+            'name'              => 'Dr. Alexander Vance',
+            'password'          => Hash::make('password'),
+            'role'              => 'admin',
+            'clinic_id'         => $mainClinic,
+            'email_verified_at' => now(),
+        ]);
+
+        // ── 4. Doctors ────────────────────────────────────────────────────
+        $doctorSpecs = [
+            ['Dr. Sarah Ahmed',   'doctor1@medalign.test', 'Cardiology',          15, 'available'],
+            ['Dr. James Okafor',  'doctor2@medalign.test', 'Orthopedics',         20, 'available'],
+            ['Dr. Priya Sharma',  'doctor3@medalign.test', 'Neurology',           25, 'available'],
+            ['Dr. Carlos Reyes',  'doctor4@medalign.test', 'General Practice',    12, 'unavailable'],
+            ['Dr. Hina Malik',    'doctor5@medalign.test', 'Pediatrics',          18, 'available'],
         ];
 
-        foreach ($patientsData as $index => [$name, $phone, $dob, $email, $gender]) {
-            $patient = Patient::firstOrCreate(
-                ['phone' => $phone],
-                [
-                    'name' => $name,
-                    'email' => $email,
-                    'dob' => $dob,
-                    'gender' => $gender,
-                ]
-            );
-
-            $tokenId = DB::table('queue_tokens')->insertGetId([
-                'clinic_id' => $clinicId,
-                'doctor_id' => $index === 0 ? $doctor->doctor_id : null,
-                'counter_id' => $counterId,
-                'patient_id' => $patient->patient_id,
-                'token_number' => 101 + $index,
-                'status' => $index === 0 ? 'called' : ($index === 5 ? 'completed' : 'waiting'),
-                'check_in_time' => now()->subMinutes(35 - ($index * 4)),
-                'called_time' => $index === 0 ? now()->subMinutes(7) : null,
-                'completed_time' => $index === 5 ? now()->subMinutes(2) : null,
-                'est_wait_time' => $index * 15,
+        $doctorIds = [];
+        $doctorUserIds = [];
+        foreach ($doctorSpecs as [$name, $email, $spec, $avgMin, $status]) {
+            $u = User::firstOrCreate(['email' => $email], [
+                'name'              => $name,
+                'password'          => Hash::make('password'),
+                'role'              => 'doctor',
+                'clinic_id'         => $mainClinic,
+                'email_verified_at' => now(),
             ]);
+            $d = Doctor::firstOrCreate(['user_id' => $u->id], [
+                'clinic_id'           => $mainClinic,
+                'specialization'      => $spec,
+                'avg_consult_min'     => $avgMin,
+                'availability_status' => $status,
+            ]);
+            $doctorIds[]    = $d->doctor_id;
+            $doctorUserIds[] = $u->id;
+        }
 
-            // Create prescription for completed patient
-            if ($index === 5) {
-                $rxId = DB::table('prescriptions')->insertGetId([
-                    'token_id' => $tokenId,
-                    'doctor_id' => $doctor->doctor_id,
-                    'patient_id' => $patient->patient_id,
-                    'notes' => 'Patient responded well to initial treatment. Keep hydrated and follow up in 2 weeks.',
-                    'issued_at' => now()->subMinutes(2),
-                ]);
-
-                DB::table('prescription_items')->insert([
-                    [
-                        'prescription_id' => $rxId,
-                        'medicine_name' => 'Amoxicillin 500mg',
-                        'dosage' => '1 capsule',
-                        'frequency' => '3 times daily',
-                        'duration' => '7 days',
-                        'instructions' => 'Take with water after meals',
-                    ],
-                    [
-                        'prescription_id' => $rxId,
-                        'medicine_name' => 'Paracetamol 500mg',
-                        'dosage' => '1-2 tablets',
-                        'frequency' => 'Every 6 hours if fever occurs',
-                        'duration' => '3 days',
-                        'instructions' => 'As needed',
-                    ]
+        // Doctor schedules (Mon–Fri, 09:00–17:00)
+        $days = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+        foreach ($doctorIds as $did) {
+            foreach ($days as $day) {
+                DB::table('doctor_schedules')->insertOrIgnore([
+                    'doctor_id'  => $did,
+                    'day_of_week'=> $day,
+                    'start_time' => '09:00:00',
+                    'end_time'   => '17:00:00',
                 ]);
             }
         }
 
-        // 7. Daily Analytics Data (for Admin charts)
-        for ($d = 6; $d >= 0; $d--) {
+        // ── 5. Counters ───────────────────────────────────────────────────
+        $counterIds = [];
+        for ($c = 1; $c <= 4; $c++) {
+            $counterIds[] = DB::table('counters')->insertGetId([
+                'clinic_id'      => $mainClinic,
+                'counter_number' => $c,
+                'counter_name'   => "Room 10{$c}",
+            ]);
+        }
+
+        // ── 6. Patients ───────────────────────────────────────────────────
+        $patientsData = [
+            ['Amina Yusuf',      '+1 555 0101', '1988-04-12', 'amina@test.org',    'Female'],
+            ['Michael Chen',     '+1 555 0102', '1979-11-03', 'michael@test.org',  'Male'],
+            ['Priya Nair',       '+1 555 0103', '1994-07-28', 'priya@test.org',    'Female'],
+            ['Jon Bell',         '+1 555 0104', '1967-02-16', 'jon@test.org',      'Male'],
+            ['Lina Gomez',       '+1 555 0105', '1982-09-08', 'lina@test.org',     'Female'],
+            ['Noah Williams',    '+1 555 0106', '1990-01-21', 'noah@test.org',     'Male'],
+            ['Fatima Al-Hassan', '+1 555 0107', '1997-03-15', 'fatima@test.org',   'Female'],
+            ['David Kim',        '+1 555 0108', '1975-08-22', 'david@test.org',    'Male'],
+            ['Sofia Rossi',      '+1 555 0109', '2001-12-05', 'sofia@test.org',    'Female'],
+            ['Omar Farooq',      '+1 555 0110', '1985-06-30', 'omar@test.org',     'Male'],
+            ['Elena Petrova',    '+1 555 0111', '1992-09-18', 'elena@test.org',    'Female'],
+            ['James Oduya',      '+1 555 0112', '1969-04-07', 'james@test.org',    'Male'],
+        ];
+
+        $patientIds = [];
+        foreach ($patientsData as [$name, $phone, $dob, $email, $gender]) {
+            $p = Patient::firstOrCreate(['phone' => $phone], [
+                'name'   => $name,
+                'email'  => $email,
+                'dob'    => $dob,
+                'gender' => $gender,
+            ]);
+            $patientIds[] = $p->patient_id;
+
+            DB::table('alert_preferences')->insertOrIgnore([
+                'patient_id'           => $p->patient_id,
+                'sms_enabled'          => (bool)rand(0, 1),
+                'whatsapp_enabled'     => (bool)rand(0, 1),
+                'near_turn_threshold'  => rand(2, 5),
+            ]);
+        }
+
+        // ── 7. Queue Tokens — Today's Queue for Doctor 1 (Cardiology) ────
+        //   token_number:  101..112
+        //   status: completed(1), called(1), waiting(rest)
+        $statusMap = [
+            0 => 'completed',
+            1 => 'called',
+            // rest: waiting
+        ];
+        $assignedDoctorId = $doctorIds[0]; // Dr. Sarah Ahmed
+
+        foreach ($patientIds as $idx => $pid) {
+            $status       = $statusMap[$idx] ?? 'waiting';
+            $checkIn      = now()->subMinutes(110 - ($idx * 8));
+            $calledTime   = null;
+            $completedTime= null;
+
+            if ($status === 'called') {
+                $calledTime = now()->subMinutes(10);
+            }
+            if ($status === 'completed') {
+                $calledTime    = now()->subMinutes(35);
+                $completedTime = now()->subMinutes(18);
+            }
+
+            $tokenId = DB::table('queue_tokens')->insertGetId([
+                'clinic_id'      => $mainClinic,
+                'doctor_id'      => $assignedDoctorId,
+                'counter_id'     => $counterIds[0],
+                'patient_id'     => $pid,
+                'token_number'   => 101 + $idx,
+                'status'         => $status,
+                'check_in_time'  => $checkIn,
+                'called_time'    => $calledTime,
+                'completed_time' => $completedTime,
+                'est_wait_time'  => $idx * 15,
+            ]);
+
+            // Prescription for completed patient
+            if ($status === 'completed') {
+                $rxId = DB::table('prescriptions')->insertGetId([
+                    'token_id'   => $tokenId,
+                    'doctor_id'  => $assignedDoctorId,
+                    'patient_id' => $pid,
+                    'notes'      => 'Patient responded well. Follow up in 2 weeks. Rest and hydration advised.',
+                    'issued_at'  => now()->subMinutes(18),
+                ]);
+                DB::table('prescription_items')->insert([
+                    ['prescription_id' => $rxId, 'medicine_name' => 'Amoxicillin 500mg',  'dosage' => '1 capsule',   'frequency' => '3x daily',             'duration' => '7 days',  'instructions' => 'After meals'],
+                    ['prescription_id' => $rxId, 'medicine_name' => 'Paracetamol 500mg', 'dosage' => '1-2 tablets', 'frequency' => 'Every 6h if fever',     'duration' => '3 days',  'instructions' => 'As needed'],
+                    ['prescription_id' => $rxId, 'medicine_name' => 'Vitamin C 1000mg',  'dosage' => '1 tablet',    'frequency' => 'Once daily after lunch', 'duration' => '30 days', 'instructions' => 'Immunity support'],
+                ]);
+            }
+        }
+
+        // Extra prescriptions (for vault demo — doctors 2 & 3, patients 6..11)
+        foreach ([1, 2] as $di) {
+            foreach ([5, 6, 7] as $pi) {
+                $rxId = DB::table('prescriptions')->insertGetId([
+                    'token_id'   => null,
+                    'doctor_id'  => $doctorIds[$di],
+                    'patient_id' => $patientIds[$pi],
+                    'notes'      => 'Routine follow-up. Continue current medications.',
+                    'issued_at'  => now()->subDays(rand(1, 14)),
+                ]);
+                DB::table('prescription_items')->insert([
+                    ['prescription_id' => $rxId, 'medicine_name' => 'Metformin 500mg',   'dosage' => '1 tablet', 'frequency' => 'Twice daily', 'duration' => '30 days', 'instructions' => 'With meals'],
+                    ['prescription_id' => $rxId, 'medicine_name' => 'Amlodipine 5mg',    'dosage' => '1 tablet', 'frequency' => 'Once daily',  'duration' => '30 days', 'instructions' => 'Morning'],
+                ]);
+            }
+        }
+
+        // ── 8. Daily Analytics (30 days for charts) ───────────────────────
+        for ($d = 29; $d >= 0; $d--) {
+            $isWeekend = in_array(now()->subDays($d)->dayOfWeek, [0, 6]);
+            $patients  = $isWeekend ? rand(20, 35) : rand(45, 85);
             DB::table('daily_analytics')->updateOrInsert(
-                ['clinic_id' => $clinicId, 'date' => now()->subDays($d)->toDateString()],
+                ['clinic_id' => $mainClinic, 'date' => now()->subDays($d)->toDateString()],
                 [
-                    'total_patients' => 45 + rand(5, 25),
-                    'avg_wait_time' => 12 + rand(0, 5),
-                    'walkout_rate' => 2.1 + (rand(0, 20) / 10),
+                    'total_patients' => $patients,
+                    'avg_wait_time'  => rand(10, 22),
+                    'walkout_rate'   => round(1.5 + (rand(0, 30) / 10), 2),
                 ]
             );
         }
+
+        // Branch clinic analytics
+        for ($d = 29; $d >= 0; $d--) {
+            DB::table('daily_analytics')->updateOrInsert(
+                ['clinic_id' => $branchClinic, 'date' => now()->subDays($d)->toDateString()],
+                [
+                    'total_patients' => rand(15, 30),
+                    'avg_wait_time'  => rand(8, 18),
+                    'walkout_rate'   => round(1.0 + (rand(0, 20) / 10), 2),
+                ]
+            );
+        }
+
+        // ── 9. Invoices ───────────────────────────────────────────────────
+        DB::table('invoices')->insert([
+            ['clinic_id' => $mainClinic,   'plan_id' => $planPro,     'amount' => 149.00, 'status' => 'paid',    'issued_date' => now()->subDays(30)->toDateString(), 'due_date' => now()->subDays(2)->toDateString()],
+            ['clinic_id' => $mainClinic,   'plan_id' => $planPro,     'amount' => 149.00, 'status' => 'pending', 'issued_date' => now()->toDateString(),               'due_date' => now()->addDays(28)->toDateString()],
+            ['clinic_id' => $branchClinic, 'plan_id' => $planStarter, 'amount' =>  49.00, 'status' => 'paid',    'issued_date' => now()->subDays(30)->toDateString(), 'due_date' => now()->subDays(2)->toDateString()],
+        ]);
     }
 }

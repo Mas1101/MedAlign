@@ -15,7 +15,6 @@ import { motion } from "framer-motion";
 function LandingPage({
   onLoginClick,
   onMarketingClick,
-  onAdminClick,
   onPatientClick,
   onDoctorClick,
   onDoctorsClick,
@@ -37,7 +36,6 @@ function LandingPage({
       <Navbar
         onLoginClick={onLoginClick}
         onDoctorClick={onDoctorClick}
-        onAdminClick={onAdminClick}
         onPatientClick={onPatientClick}
         onContactClick={onContactClick}
         onMarketingClick={onMarketingClick}
@@ -98,12 +96,14 @@ function LandingPage({
               >
                 <CalendarDays className="h-4 w-4 text-amber-600" /> Services
               </button>
-              <button
-                onClick={onAdminClick}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 px-5 py-3 text-sm font-bold text-indigo-700 shadow-sm transition duration-300 cursor-pointer"
-              >
-                <ShieldCheck className="h-4 w-4 text-indigo-600" /> Admin Console
-              </button>
+              {!authenticated && (
+                <button
+                  onClick={onLoginClick}
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 px-5 py-3 text-sm font-bold text-indigo-700 shadow-sm transition duration-300 cursor-pointer"
+                >
+                  <ShieldCheck className="h-4 w-4 text-indigo-600" /> Sign In / Login
+                </button>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">

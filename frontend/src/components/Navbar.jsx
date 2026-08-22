@@ -1,24 +1,38 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, Stethoscope, ShieldCheck, UserRound, Phone, HelpCircle, LayoutDashboard, LogOut } from 'lucide-react';
+import {
+  Menu, X, Stethoscope, UserRound, Phone, LayoutDashboard,
+  LogOut, Activity, LogIn, ShieldCheck
+} from 'lucide-react';
 import MedAlignBrand from './MedAlignBrand';
 
-function Navbar({ onLoginClick, onDoctorClick, onAdminClick, onPatientClick, onContactClick, onMarketingClick, authenticated, onLogout, user }) {
+function Navbar({ onLoginClick, onDoctorClick, onPatientClick, onContactClick, onMarketingClick, authenticated, onLogout, user }) {
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const ref = useRef(null);
 
   const profileName = user
-    ? (
-        user.name ||
-        [user.first_name, user.last_name].filter(Boolean).join(' ') ||
-        user.email ||
-        'User'
-      )
+    ? (user.name || [user.first_name, user.last_name].filter(Boolean).join(' ') || user.email || 'User')
     : 'User';
 
-  const profileRole = user?.role ? user.role.toUpperCase() : 'USER';
+  const profileRole  = user?.role ? user.role.toUpperCase() : 'USER';
   const profileInitial = profileName.charAt(0).toUpperCase();
+
+  // Role-based dashboard link
+  const dashboardLink =
+    user?.role === 'admin'  ? '/admin'  :
+    user?.role === 'doctor' ? '/doctor' :
+    '/patient';
+
+  const dashboardLabel =
+    user?.role === 'admin'  ? 'Admin Console'     :
+    user?.role === 'doctor' ? 'Doctor Workspace'  :
+    'Patient Portal';
+
+  const DashboardIcon =
+    user?.role === 'admin'  ? ShieldCheck :
+    user?.role === 'doctor' ? Stethoscope :
+    UserRound;
 
   useEffect(() => {
     function handleClick(e) {
@@ -54,15 +68,17 @@ function Navbar({ onLoginClick, onDoctorClick, onAdminClick, onPatientClick, onC
         {/* Desktop Navigation Links */}
         <div className="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-600">
           <Link to="/" className="hover:text-sky-700 transition">Home</Link>
-          <Link to="/patient" className="text-emerald-700 hover:text-emerald-800 transition font-bold flex items-center gap-1.5 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+          <Link
+            to="/patient"
+            className="text-emerald-700 hover:text-emerald-800 transition font-bold flex items-center gap-1.5 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200"
+          >
             <UserRound className="h-3.5 w-3.5" /> Patient Portal
           </Link>
           <Link to="/doctors" className="hover:text-sky-700 transition">Specialists</Link>
           <Link to="/marketing" className="hover:text-sky-700 transition">Services</Link>
-          <Link to="/admin" className="hover:text-sky-700 transition flex items-center gap-1">
-            <ShieldCheck className="h-4 w-4 text-indigo-600" /> Admin
+          <Link to="/contact" className="hover:text-sky-700 transition flex items-center gap-1">
+            <Phone className="h-3.5 w-3.5" /> Contact
           </Link>
-          <Link to="/contact" className="hover:text-sky-700 transition">Contact</Link>
         </div>
 
         {/* Login / Profile */}
@@ -92,14 +108,15 @@ function Navbar({ onLoginClick, onDoctorClick, onAdminClick, onPatientClick, onC
                     </span>
                   </div>
                   <div className="mt-2 space-y-1">
+                    <Link
+                      to={dashboardLink}
+                      onClick={() => setOpen(false)}
+                      className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl"
+                    >
+                      <DashboardIcon className="h-3.5 w-3.5 text-sky-600" /> {dashboardLabel}
+                    </Link>
                     <Link to="/patient" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
                       <UserRound className="h-3.5 w-3.5 text-emerald-600" /> Patient Portal
-                    </Link>
-                    <Link to="/doctor" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
-                      <Stethoscope className="h-3.5 w-3.5 text-emerald-600" /> Doctor Workspace
-                    </Link>
-                    <Link to="/admin" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
-                      <LayoutDashboard className="h-3.5 w-3.5 text-indigo-600" /> Admin Console
                     </Link>
                   </div>
                   <div className="mt-2 border-t border-slate-100 pt-2">
@@ -120,21 +137,22 @@ function Navbar({ onLoginClick, onDoctorClick, onAdminClick, onPatientClick, onC
               </Link>
               <button
                 onClick={onLoginClick}
-                className="px-5 py-2 rounded-full bg-gradient-to-r from-sky-700 to-indigo-600 hover:from-sky-600 hover:to-indigo-500 text-white text-xs font-bold transition shadow-md shadow-sky-500/20 cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-gradient-to-r from-sky-700 to-indigo-600 hover:from-sky-600 hover:to-indigo-500 text-white text-xs font-bold transition shadow-md shadow-sky-500/20 cursor-pointer"
               >
-                Sign In
+                <LogIn className="h-3.5 w-3.5" /> Sign In
               </button>
             </div>
           )}
         </div>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer Backdrop */}
       <div
         className={`fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-sm transition-opacity duration-300 ${menuOpen ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
         onClick={() => setMenuOpen(false)}
       />
 
+      {/* Mobile Drawer */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 flex h-screen w-80 max-w-[85vw] flex-col overflow-y-auto border-r border-slate-200 bg-white px-6 py-6 shadow-2xl transition-transform duration-300 ease-out ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
@@ -152,11 +170,37 @@ function Navbar({ onLoginClick, onDoctorClick, onAdminClick, onPatientClick, onC
         <div className="mt-6 space-y-1.5 text-sm font-semibold">
           <Link to="/" onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 text-slate-700 hover:bg-sky-50 hover:text-sky-700">Home</Link>
           <Link to="/patient" onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 bg-emerald-50 text-emerald-800 font-bold">Patient Portal (PWA)</Link>
-          <Link to="/doctor" onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 text-emerald-700 hover:bg-emerald-50 font-bold">Doctor Workspace</Link>
-          <Link to="/admin" onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 text-indigo-700 hover:bg-indigo-50 font-bold">Admin Console</Link>
           <Link to="/doctors" onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 text-slate-700 hover:bg-slate-50">Specialists Directory</Link>
           <Link to="/marketing" onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 text-slate-700 hover:bg-slate-50">Platform Services</Link>
-          <Link to="/contact" onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 text-slate-700 hover:bg-slate-50">Contact & Support</Link>
+          <Link to="/contact" onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 text-slate-700 hover:bg-slate-50">Contact &amp; Support</Link>
+          {!authenticated && (
+            <>
+              <div className="border-t border-slate-100 my-2" />
+              <Link to="/doctor-auth" onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 text-emerald-700 hover:bg-emerald-50 font-bold flex items-center gap-2">
+                <Stethoscope className="h-4 w-4" /> Doctor Login
+              </Link>
+              <button
+                onClick={() => { setMenuOpen(false); onLoginClick?.(); }}
+                className="block w-full text-left rounded-2xl px-4 py-3 bg-gradient-to-r from-sky-700 to-indigo-600 text-white font-bold flex items-center gap-2 cursor-pointer"
+              >
+                <LogIn className="h-4 w-4" /> Sign In
+              </button>
+            </>
+          )}
+          {authenticated && (
+            <>
+              <div className="border-t border-slate-100 my-2" />
+              <Link to={dashboardLink} onClick={() => setMenuOpen(false)} className="block rounded-2xl px-4 py-3 text-sky-700 hover:bg-sky-50 font-bold flex items-center gap-2">
+                <LayoutDashboard className="h-4 w-4" /> {dashboardLabel}
+              </Link>
+              <button
+                onClick={() => { setMenuOpen(false); onLogout?.(); }}
+                className="block w-full text-left rounded-2xl px-4 py-3 text-red-600 hover:bg-red-50 font-bold flex items-center gap-2 cursor-pointer"
+              >
+                <LogOut className="h-4 w-4" /> Sign Out
+              </button>
+            </>
+          )}
         </div>
       </aside>
     </nav>
