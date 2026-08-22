@@ -23,8 +23,8 @@ Route::middleware('throttle:10,1')->prefix('auth')->group(function () {
     Route::post('/reset-password', [AuthController::class, 'resetPasswordWithOtp']);
 });
 
-// Authenticated Routes (Sanctum Protected)
-Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
+// Authenticated Routes (Protected by JWT and Sanctum)
+Route::middleware(['jwt.auth'])->prefix('auth')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });

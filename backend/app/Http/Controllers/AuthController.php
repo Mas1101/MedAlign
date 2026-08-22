@@ -172,13 +172,15 @@ class AuthController extends Controller
             return response()->json(['success' => false, 'message' => 'User account not found.'], 404);
         }
 
-        // Generate Sanctum Bearer token
-        $token = $user->createToken('auth_token')->plainTextToken;
+        // Generate RFC 7519 signed JSON Web Token (JWT)
+        $jwtToken = \App\Http\Services\JwtService::generateToken($user);
+        $user->createToken('auth_token');
 
         return response()->json([
             'success' => true,
             'message' => 'Email verified successfully!',
-            'access_token' => $token,
+            'access_token' => $jwtToken,
+            'jwt_token' => $jwtToken,
             'token_type' => 'Bearer',
             'user' => $user->load(['clinic', 'doctor']),
             'redirect_url' => $this->getRoleRedirect($user->role),
@@ -224,15 +226,17 @@ class AuthController extends Controller
             ], 403);
         }
 
-        // Generate Sanctum Token
-        $token = $user->createToken('auth_token')->plainTextToken;
+        // Generate RFC 7519 signed JSON Web Token (JWT)
+        $jwtToken = \App\Http\Services\JwtService::generateToken($user);
+        $user->createToken('auth_token');
 
         return response()->json([
             'success' => true,
             'message' => 'Login successful.',
-            'access_token' => $token,
+            'access_token' => $jwtToken,
+            'jwt_token' => $jwtToken,
             'token_type' => 'Bearer',
-            'user' => $user->load('clinic'),
+            'user' => $user->load(['clinic', 'doctor']),
             'redirect_url' => $this->getRoleRedirect($user->role),
         ]);
     }

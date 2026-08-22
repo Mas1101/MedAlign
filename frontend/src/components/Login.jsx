@@ -34,9 +34,11 @@ const Login = ({ onSuccess, onRequireOtp, roleContext = null, title = null, subt
           }
           return;
         }
-        setError(err.response.data.message || 'Invalid email or password.');
+        setError(err.response.data.message || err.response.data.error || 'Invalid credentials.');
+      } else if (err.message) {
+        setError(`Connection issue: ${err.message}`);
       } else {
-        setError('Unable to sign in. Please check backend connection.');
+        setError('Unable to sign in. Please verify the backend container is running.');
       }
     } finally {
       setIsLoading(false);
