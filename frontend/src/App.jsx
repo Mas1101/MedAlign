@@ -5,7 +5,10 @@ import MarketingPage from "./pages/MarketingPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import GetStartedPage from "./pages/GetStartedPage";
+import DoctorsPage from "./pages/DoctorsPage";
+import ContactPage from "./pages/ContactPage";
 import Auth from "./components/Auth";
+import DoctorAuth from "./components/DoctorAuth";
 import api from "./api";
 
 function App() {
@@ -51,6 +54,12 @@ function App() {
     navigate('/');
   };
 
+  const handleDoctorLoginSuccess = (token, doctor) => {
+    if (doctor?.role !== "doctor") return;
+    handleLoginSuccess(token, doctor);
+    navigate("/doctor");
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
       <Routes>
@@ -61,7 +70,9 @@ function App() {
               onLoginClick={() => navigate('/auth')}
               onMarketingClick={() => navigate('/marketing')}
               onAdminClick={() => navigate('/admin')}
-              onDoctorClick={() => navigate('/doctor')}
+              onDoctorsClick={() => navigate('/doctors')}
+              onDoctorClick={() => navigate(authenticated && user?.role === "doctor" ? '/doctor' : '/doctor-auth')}
+              onContactClick={() => navigate('/contact')}
               onGetStarted={() => navigate('/get-started')}
               authenticated={authenticated}
               onLogout={handleLogout}
@@ -70,6 +81,9 @@ function App() {
           }
         />
         <Route path="/auth" element={<Auth onSuccess={handleLoginSuccess} onBack={() => navigate(-1)} />} />
+        <Route path="/doctor-auth" element={<DoctorAuth onSuccess={handleDoctorLoginSuccess} onBack={() => navigate(-1)} />} />
+        <Route path="/doctors" element={<DoctorsPage onBack={() => navigate(-1)} onDoctorSignIn={() => navigate('/doctor-auth')} />} />
+        <Route path="/contact" element={<ContactPage onBack={() => navigate(-1)} />} />
         <Route path="/get-started" element={<GetStartedPage onBack={() => navigate(-1)} onDoctorClick={() => navigate('/doctor')} />} />
         <Route
           path="/marketing"
@@ -85,8 +99,11 @@ function App() {
         <Route
           path="/doctor"
           element={
-            <DoctorDashboard user={user} onLogout={handleLogout} onBack={() => navigate(-1)} />
-          }
+            authenticated && user?.role === "doctor" ? (
+              <DoctorDashboard user={user} onLogout={handleLogout} onBack={() => navigate(-1)} />
+            ) : (
+              <Navigate to="/doctor-auth" replace />
+            )}
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

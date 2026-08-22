@@ -17,6 +17,8 @@ function LandingPage({
   onMarketingClick,
   onAdminClick,
   onDoctorClick,
+  onContactClick,
+  onDoctorsClick,
   onGetStarted,
   authenticated,
   onLogout,
@@ -31,7 +33,7 @@ function LandingPage({
         <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-white to-transparent" />
       </div>
 
-      <Navbar onLoginClick={onLoginClick} authenticated={authenticated} onLogout={onLogout} user={user} />
+      <Navbar onLoginClick={onLoginClick} onDoctorClick={onDoctorClick} onAdminClick={onAdminClick} onContactClick={onContactClick} authenticated={authenticated} onLogout={onLogout} user={user} />
 
       <section className="pt-28 pb-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 grid gap-16 lg:grid-cols-[1.05fr_0.95fr] items-center">
@@ -54,24 +56,19 @@ function LandingPage({
               Discover a modern medical platform for appointments, digital consultations, and personalized care — all in one trusted healthcare experience.
             </p>
 
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <button onClick={onGetStarted} className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-sky-700 to-indigo-600 px-8 py-3 text-base font-semibold text-white shadow-lg shadow-sky-500/20 transition duration-300 hover:from-sky-600 hover:to-indigo-500">
-                Get Started
+            <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+              <button onClick={onGetStarted} className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-gradient-to-r from-sky-700 to-indigo-600 px-8 py-3 text-base font-semibold text-white shadow-lg shadow-sky-500/20 transition duration-300 hover:from-sky-600 hover:to-indigo-500">
+                <HeartPulse className="h-6 w-6" /> Get Started
               </button>
               <button
                 onClick={onMarketingClick}
-                 className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-8 py-3 text-base font-semibold text-slate-700 shadow-sm transition duration-300 hover:border-slate-300 hover:bg-slate-50">
-                View Services
+                 className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full border border-amber-200 bg-amber-50 px-8 py-3 text-base font-semibold text-amber-700 shadow-sm transition duration-300 hover:border-amber-300 hover:bg-amber-100">
+                <CalendarDays className="h-6 w-6" /> View Services
               </button>
               <button
-                onClick={onAdminClick}
-                 className="inline-flex items-center justify-center rounded-full border border-blue-200 bg-blue-50 px-8 py-3 text-base font-semibold text-blue-700 shadow-sm transition duration-300 hover:border-blue-300 hover:bg-blue-100">
-                Admin Dashboard
-              </button>
-              <button
-                onClick={onDoctorClick}
-                className="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 px-8 py-3 text-base font-semibold text-emerald-700 shadow-sm transition duration-300 hover:border-emerald-300 hover:bg-emerald-100">
-                Doctor Dashboard
+                onClick={onDoctorsClick}
+                className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full border border-emerald-200 bg-emerald-50 px-8 py-3 text-base font-semibold text-emerald-700 shadow-sm transition duration-300 hover:border-emerald-300 hover:bg-emerald-100">
+                <Stethoscope className="h-6 w-6" /> Doctors
               </button>
             </div>
 
@@ -154,7 +151,7 @@ function LandingPage({
                   <p className="text-sm text-slate-500">Patient Score</p>
                   <p className="mt-2 text-xl font-semibold text-slate-900">4.9/5</p>
                 </div>
-                <button className="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/10">
+                <button onClick={onGetStarted} className="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/10 transition hover:bg-blue-700">
                   Book Now
                 </button>
               </div>
@@ -483,7 +480,11 @@ function LandingPage({
               <li className="hover:text-blue-700 cursor-pointer transition">Home</li>
               <li className="hover:text-blue-700 cursor-pointer transition">Services</li>
               <li className="hover:text-blue-700 cursor-pointer transition">About</li>
-              <li className="hover:text-blue-700 cursor-pointer transition">Contact</li>
+              <li>
+                <button onClick={onContactClick} className="cursor-pointer transition hover:text-blue-700">
+                  Contact
+                </button>
+              </li>
 
             </ul>
 

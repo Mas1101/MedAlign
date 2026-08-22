@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
+import { Menu, X } from 'lucide-react';
 
-function Navbar({ onLoginClick, authenticated, onLogout, user }) {
+function Navbar({ onLoginClick, onDoctorClick, onAdminClick, onContactClick, authenticated, onLogout, user }) {
   const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const ref = useRef(null);
 
   const profileName = user
@@ -35,11 +37,22 @@ function Navbar({ onLoginClick, authenticated, onLogout, user }) {
   }, []);
 
   return (
-    <nav className="fixed w-full top-0 z-50 bg-white/95 backdrop-blur-2xl border-b border-blue-100 px-8 py-4 shadow-sm hover:shadow-md transition-shadow">
+    <nav className="fixed top-0 z-50 w-full border-b border-blue-100 bg-white/95 px-8 py-4 shadow-sm backdrop-blur-2xl transition-shadow hover:shadow-md">
 
-      <div className="max-w-6xl mx-auto flex items-center justify-between">
+      <div className="relative mx-auto flex max-w-6xl items-center justify-between">
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setMenuOpen((isOpen) => !isOpen)}
+            aria-expanded={menuOpen}
+            aria-controls="main-navigation"
+            aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-blue-100 bg-white text-slate-700 shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+          >
+            {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
 
-        {/* Logo */}
         <h1 style={{
           background: 'linear-gradient(to right, #1e40af, #3b82f6)',
           WebkitBackgroundClip: 'text',
@@ -48,47 +61,9 @@ function Navbar({ onLoginClick, authenticated, onLogout, user }) {
           backgroundSize: '200% 100%',
           backgroundPosition: '0% 0%',
           display: 'inline-block'
-        }} className="text-2xl font-bold">
+        }} className="absolute left-1/2 -translate-x-1/2 text-2xl font-bold">
           MedAlign
         </h1>
-
-
-        {/* Navigation Links */}
-        <div className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
-
-          <a
-            href="#"
-            className="hover:text-blue-700 transition duration-300 relative group"
-          >
-            Home
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-blue-400 group-hover:w-full transition-all duration-300"></span>
-          </a>
-
-          <a
-            href="#"
-            className="hover:text-blue-700 transition duration-300 relative group"
-          >
-            Doctors
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-blue-400 group-hover:w-full transition-all duration-300"></span>
-          </a>
-
-          <a
-            href="#"
-            className="hover:text-blue-700 transition duration-300 relative group"
-          >
-            Services
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-blue-400 group-hover:w-full transition-all duration-300"></span>
-          </a>
-
-          <a
-            href="#"
-            className="hover:text-blue-700 transition duration-300 relative group"
-          >
-            Contact
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-blue-400 group-hover:w-full transition-all duration-300"></span>
-          </a>
-
-        </div>
 
 
         {/* Login / Profile */}
@@ -126,6 +101,62 @@ function Navbar({ onLoginClick, authenticated, onLogout, user }) {
         )}
 
       </div>
+
+      <div
+        className={`fixed inset-0 z-40 bg-slate-950/25 transition-opacity duration-300 ${menuOpen ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+        aria-hidden="true"
+      />
+
+      <aside
+        id="main-navigation"
+        aria-label="Main navigation"
+        className={`fixed inset-y-0 left-0 z-50 flex h-screen w-80 max-w-[88vw] flex-col overflow-y-auto border-r border-blue-100 bg-white px-8 pb-10 pt-8 shadow-2xl transition-transform duration-300 ease-out ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`}
+      >
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">MedAlign</span>
+          <button
+            type="button"
+            onClick={() => setMenuOpen(false)}
+            aria-label="Close navigation menu"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-blue-50 hover:text-blue-700"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <div className="mt-14 space-y-4">
+          {['Home'].map((item) => (
+            <a
+              key={item}
+              href="#"
+              className="block rounded-2xl px-5 py-5 text-lg font-medium text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"
+            >
+              {item}
+            </a>
+          ))}
+          <button
+            type="button"
+            onClick={onDoctorClick}
+            className="block w-full rounded-2xl px-5 py-5 text-left text-lg font-medium text-emerald-700 transition hover:bg-emerald-50"
+          >
+            Doctor Dashboard
+          </button>
+          <button
+            type="button"
+            onClick={onAdminClick}
+            className="block w-full rounded-2xl px-5 py-5 text-left text-lg font-medium text-blue-700 transition hover:bg-blue-50"
+          >
+            Admin Dashboard
+          </button>
+          <button
+            type="button"
+            onClick={onContactClick}
+            className="block w-full rounded-2xl px-5 py-5 text-left text-lg font-medium text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"
+          >
+            Contact
+          </button>
+        </div>
+      </aside>
 
     </nav>
   );

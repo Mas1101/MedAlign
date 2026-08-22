@@ -21,9 +21,11 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-Route::get('/doctor/dashboard', [DoctorDashboardController::class, 'show']);
-Route::post('/doctor/queue/next', [DoctorDashboardController::class, 'callNext']);
-Route::patch('/doctor/queue/{token}', [DoctorDashboardController::class, 'updateStatus']);
+Route::middleware(['auth:sanctum', 'doctor'])->group(function () {
+	Route::get('/doctor/dashboard', [DoctorDashboardController::class, 'show']);
+	Route::post('/doctor/queue/next', [DoctorDashboardController::class, 'callNext']);
+	Route::patch('/doctor/queue/{token}', [DoctorDashboardController::class, 'updateStatus']);
+});
 
 // Dummy CRUD operations for items using UsersController
 Route::get('/items', [UsersController::class, 'index']);

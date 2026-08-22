@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import api from '../api';
 
-const Register = ({ onSuccess }) => {
+const Register = ({ onSuccess, localOnly = false, role = 'reception', title = 'Create an account' }) => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -13,10 +14,16 @@ const Register = ({ onSuccess }) => {
     setIsLoading(true);
 
     try {
-      const response = await api.post('/register', { email, password });
+      if (localOnly) {
+        onSuccess?.('local-doctor-demo-token', { name, email, role });
+        return;
+      }
+
+      const response = await api.post('/register', { name, email, password, password_confirmation: password, role });
       const { access_token, user } = response.data;
 
       setEmail('');
+      setName('');
       setPassword('');
       setError('');
 
@@ -30,9 +37,13 @@ const Register = ({ onSuccess }) => {
 
   return (
     <div className="max-w-md mx-auto p-6 rounded-3xl bg-white shadow-xl shadow-slate-200">
-      <h2 className="text-2xl font-semibold text-slate-900 mb-6">Create an account</h2>
+      <h2 className="text-2xl font-semibold text-slate-900 mb-6">{title}</h2>
       {error && <div className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
       <form onSubmit={handleSubmit} className="space-y-5">
+        <label className="block">
+          <span className="text-sm font-medium text-slate-700">Full name</span>
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" />
+        </label>
         <label className="block">
           <span className="text-sm font-medium text-slate-700">Email</span>
           <input
