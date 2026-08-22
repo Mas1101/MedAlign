@@ -30,7 +30,7 @@ const workflow = [
   { number: "04", icon: Pill, label: "Prescription Delivery", text: "Digital prescription moves to the patient vault." },
 ];
 
-function MarketingPage({ onBack, onAdminClick, onDoctorClick }) {
+function MarketingPage({ onBack, onPatientClick, onDoctorClick }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-sky-50/40 to-white text-slate-900">
       <header className="border-b border-slate-200 bg-white/85 backdrop-blur-xl sticky top-0 z-30">
@@ -51,11 +51,11 @@ function MarketingPage({ onBack, onAdminClick, onDoctorClick }) {
               MedAlign seamlessly connects the outpatient waiting lobby, doctor consultation workspace, digital prescription signing, and patient medical vault into one coherent operating system.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <button onClick={onAdminClick} className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-700 to-indigo-600 hover:from-sky-600 hover:to-indigo-500 px-5 py-3 text-xs font-bold text-white shadow-lg shadow-sky-700/20 transition cursor-pointer">
-                Open Admin Console <ArrowRight className="h-4 w-4" />
+              <button onClick={onPatientClick} className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-700 to-indigo-600 hover:from-sky-600 hover:to-indigo-500 px-5 py-3 text-xs font-bold text-white shadow-lg shadow-sky-700/20 transition cursor-pointer">
+                Open Patient Portal <ArrowRight className="h-4 w-4" />
               </button>
               <button onClick={onDoctorClick} className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 px-5 py-3 text-xs font-bold text-emerald-700 transition cursor-pointer">
-                Open Doctor Workspace <Stethoscope className="h-4 w-4" />
+                Doctor Workspace <Stethoscope className="h-4 w-4" />
               </button>
             </div>
           </div>
@@ -127,7 +127,7 @@ function MarketingPage({ onBack, onAdminClick, onDoctorClick }) {
         </section>
 
         <section className="grid gap-6 lg:grid-cols-2">
-          <ActionPanel icon={<BarChart3 className="h-6 w-6" />} eyebrow="For Clinic Leadership" title="Live operational analytics" text="Bring queue health, clinician availability, daily walkout rates, and staff permissions into one centralized console." action="Launch Admin Console" onClick={onAdminClick} tone="blue" />
+          <ActionPanel icon={<BarChart3 className="h-6 w-6" />} eyebrow="For Patients & Families" title="Real-time Queue & Vault" text="Track live queue movements, receive SMS/WhatsApp turn alerts, and access digital prescriptions securely." action="Launch Patient Portal" onClick={onPatientClick} tone="blue" />
           <ActionPanel icon={<ClipboardList className="h-6 w-6" />} eyebrow="For Healthcare Providers" title="Focused consultation workspace" text="Keep the active patient front and center, review medical records, and issue prescription items in seconds." action="Launch Doctor Workspace" onClick={onDoctorClick} tone="emerald" />
         </section>
       </main>

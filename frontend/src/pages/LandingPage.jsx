@@ -531,8 +531,8 @@ function LandingPage({
                 </button>
               </li>
               <li>
-                <button onClick={onAdminClick} className="hover:text-blue-700 font-semibold cursor-pointer transition">
-                  Admin Console
+                <button onClick={onLoginClick} className="hover:text-blue-700 font-semibold cursor-pointer transition">
+                  Sign In / Login
                 </button>
               </li>
               <li>

@@ -179,6 +179,7 @@ function App() {
             element={
               <MarketingPage
                 onBack={() => navigate("/")}
+                onPatientClick={() => navigate("/patient")}
                 onDoctorClick={() => navigate("/doctor")}
               />
             }
