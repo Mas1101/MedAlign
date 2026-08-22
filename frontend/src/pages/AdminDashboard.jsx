@@ -9,12 +9,13 @@ import {
   Stethoscope,
   Users,
   TrendingUp,
-  AlertCircle
+  AlertCircle,
+  LogOut
 } from "lucide-react";
 import api from "../api";
 import MedAlignBrand from "../components/MedAlignBrand";
 
-function AdminDashboard({ onBack }) {
+function AdminDashboard({ onBack, onLogout }) {
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -97,7 +98,15 @@ function AdminDashboard({ onBack }) {
             >
               <RefreshCw className={`h-3.5 w-3.5 ${isRefreshing ? 'animate-spin text-sky-600' : ''}`} />
               <span>{isRefreshing ? 'Refreshing...' : 'Refresh Metrics'}</span>
-            </button>
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-xs font-semibold text-red-600 shadow-sm transition hover:bg-red-100 cursor-pointer"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                <span>Sign Out</span>
+              </button>
+            )}
             {onBack && (
               <button
                 onClick={onBack}
