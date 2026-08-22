@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Activity,
   BarChart3,
@@ -10,6 +11,71 @@ import {
 } from "lucide-react";
 
 function AdminDashboard() {
+  const [dashboard, setDashboard] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const response = await fetch(
+  `${import.meta.env.VITE_API_URL}/api/admin/dashboard`,
+  {
+    headers: {
+      "X-API-TOKEN": import.meta.env.VITE_API_TOKEN,
+      Accept: "application/json",
+    },
+  }
+);
+
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        setDashboard(data);
+      } catch (err) {
+        setError("Failed to load dashboard data.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboard();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+        <p className="text-slate-600">Loading dashboard...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+        <p className="text-red-600">{error}</p>
+      </div>
+    );
+  }
+
+  const queue = dashboard?.queue_snapshot ?? {};
+  const doctors = dashboard?.doctor_activity ?? {};
+  const subscriptions = dashboard?.subscription_status ?? {};
+  const analytics = dashboard?.analytics ?? {};
+
+  const doctorAvailability =
+    doctors.total_doctors > 0
+      ? Math.round((doctors.available / doctors.total_doctors) * 100)
+      : 0;
+
+  const analyticsPerformance =
+    analytics.total_patients > 0
+      ? Math.max(0, Math.min(100, 100 - analytics.average_walkout_rate))
+      : 0;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-white text-slate-900">
       {/* Header */}
@@ -19,6 +85,7 @@ function AdminDashboard() {
             <p className="text-sm font-medium uppercase tracking-[0.25em] text-blue-600">
               MedAlign
             </p>
+
             <h1 className="mt-1 text-3xl font-semibold tracking-tight">
               Admin Dashboard
             </h1>
@@ -40,6 +107,7 @@ function AdminDashboard() {
               <div className="rounded-2xl bg-blue-50 p-3 text-blue-600">
                 <CalendarClock className="h-6 w-6" />
               </div>
+
               <span className="text-sm font-medium text-green-600">
                 Today
               </span>
@@ -48,7 +116,11 @@ function AdminDashboard() {
             <p className="mt-5 text-sm font-medium text-slate-500">
               Queue Snapshot
             </p>
-            <p className="mt-2 text-3xl font-semibold">24</p>
+
+            <p className="mt-2 text-3xl font-semibold">
+              {queue.waiting ?? 0}
+            </p>
+
             <p className="mt-2 text-sm text-slate-500">
               Patients currently waiting
             </p>
@@ -60,6 +132,7 @@ function AdminDashboard() {
               <div className="rounded-2xl bg-indigo-50 p-3 text-indigo-600">
                 <Stethoscope className="h-6 w-6" />
               </div>
+
               <span className="text-sm font-medium text-green-600">
                 Active
               </span>
@@ -68,7 +141,11 @@ function AdminDashboard() {
             <p className="mt-5 text-sm font-medium text-slate-500">
               Doctor Activity
             </p>
-            <p className="mt-2 text-3xl font-semibold">18</p>
+
+            <p className="mt-2 text-3xl font-semibold">
+              {doctors.available ?? 0}
+            </p>
+
             <p className="mt-2 text-sm text-slate-500">
               Doctors currently active
             </p>
@@ -80,17 +157,22 @@ function AdminDashboard() {
               <div className="rounded-2xl bg-green-50 p-3 text-green-600">
                 <CreditCard className="h-6 w-6" />
               </div>
+
               <span className="text-sm font-medium text-green-600">
-                +8.4%
+                Active
               </span>
             </div>
 
             <p className="mt-5 text-sm font-medium text-slate-500">
               Subscription Status
             </p>
-            <p className="mt-2 text-3xl font-semibold">1,284</p>
+
+            <p className="mt-2 text-3xl font-semibold">
+              {subscriptions.active_clinics ?? 0}
+            </p>
+
             <p className="mt-2 text-sm text-slate-500">
-              Active subscriptions
+              Active clinic subscriptions
             </p>
           </div>
 
@@ -100,17 +182,22 @@ function AdminDashboard() {
               <div className="rounded-2xl bg-purple-50 p-3 text-purple-600">
                 <BarChart3 className="h-6 w-6" />
               </div>
+
               <span className="text-sm font-medium text-blue-600">
-                This month
+                Current
               </span>
             </div>
 
             <p className="mt-5 text-sm font-medium text-slate-500">
               Analytics
             </p>
-            <p className="mt-2 text-3xl font-semibold">92.6%</p>
+
+            <p className="mt-2 text-3xl font-semibold">
+              {analyticsPerformance}%
+            </p>
+
             <p className="mt-2 text-sm text-slate-500">
-              Overall platform performance
+              Platform performance
             </p>
           </div>
         </section>
@@ -122,6 +209,7 @@ function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-semibold">Queue Snapshot</h2>
+
                 <p className="mt-1 text-sm text-slate-500">
                   Current patient queue overview
                 </p>
@@ -134,36 +222,46 @@ function AdminDashboard() {
               <div className="flex items-center justify-between rounded-2xl bg-blue-50 p-4">
                 <div>
                   <p className="font-medium text-slate-800">Waiting</p>
+
                   <p className="text-sm text-slate-500">
                     Patients in queue
                   </p>
                 </div>
+
                 <span className="text-2xl font-semibold text-blue-700">
-                  24
+                  {queue.waiting ?? 0}
                 </span>
               </div>
 
               <div className="flex items-center justify-between rounded-2xl bg-green-50 p-4">
                 <div>
-                  <p className="font-medium text-slate-800">In Consultation</p>
+                  <p className="font-medium text-slate-800">
+                    In Consultation
+                  </p>
+
                   <p className="text-sm text-slate-500">
                     Currently being served
                   </p>
                 </div>
+
                 <span className="text-2xl font-semibold text-green-700">
-                  12
+                  {queue.called ?? 0}
                 </span>
               </div>
 
               <div className="flex items-center justify-between rounded-2xl bg-slate-50 p-4">
                 <div>
-                  <p className="font-medium text-slate-800">Average Wait</p>
+                  <p className="font-medium text-slate-800">
+                    Completed
+                  </p>
+
                   <p className="text-sm text-slate-500">
-                    Current average
+                    Completed queue tokens
                   </p>
                 </div>
+
                 <span className="text-2xl font-semibold text-slate-700">
-                  15m
+                  {queue.completed ?? 0}
                 </span>
               </div>
             </div>
@@ -174,6 +272,7 @@ function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-semibold">Doctor Activity</h2>
+
                 <p className="mt-1 text-sm text-slate-500">
                   Current doctor availability
                 </p>
@@ -186,51 +285,55 @@ function AdminDashboard() {
               <div className="flex items-center justify-between rounded-2xl border border-slate-100 p-4">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-indigo-100" />
+
                   <div>
-                    <p className="font-medium">Dr. Sarah Ahmed</p>
+                    <p className="font-medium">Available Doctors</p>
+
                     <p className="text-sm text-slate-500">
-                      Cardiology
+                      Currently available
                     </p>
                   </div>
                 </div>
 
                 <span className="flex items-center gap-2 text-sm font-medium text-green-600">
                   <span className="h-2 w-2 rounded-full bg-green-500" />
-                  Online
+                  {doctors.available ?? 0}
                 </span>
               </div>
 
               <div className="flex items-center justify-between rounded-2xl border border-slate-100 p-4">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-blue-100" />
+
                   <div>
-                    <p className="font-medium">Dr. Rahim Khan</p>
+                    <p className="font-medium">Total Doctors</p>
+
                     <p className="text-sm text-slate-500">
-                      Neurology
+                      Registered doctors
                     </p>
                   </div>
                 </div>
 
-                <span className="flex items-center gap-2 text-sm font-medium text-green-600">
-                  <span className="h-2 w-2 rounded-full bg-green-500" />
-                  Online
+                <span className="text-sm font-medium text-blue-600">
+                  {doctors.total_doctors ?? 0}
                 </span>
               </div>
 
               <div className="flex items-center justify-between rounded-2xl border border-slate-100 p-4">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-purple-100" />
+
                   <div>
-                    <p className="font-medium">Dr. Emily Wilson</p>
+                    <p className="font-medium">Unavailable Doctors</p>
+
                     <p className="text-sm text-slate-500">
-                      Pediatrics
+                      Currently unavailable
                     </p>
                   </div>
                 </div>
 
-                <span className="flex items-center gap-2 text-sm font-medium text-slate-500">
-                  <span className="h-2 w-2 rounded-full bg-slate-400" />
-                  Offline
+                <span className="text-sm font-medium text-slate-500">
+                  {doctors.unavailable ?? 0}
                 </span>
               </div>
             </div>
@@ -250,6 +353,7 @@ function AdminDashboard() {
                 <h2 className="text-xl font-semibold">
                   Subscription Status
                 </h2>
+
                 <p className="text-sm text-slate-500">
                   Current subscription overview
                 </p>
@@ -258,18 +362,33 @@ function AdminDashboard() {
 
             <div className="mt-6 grid grid-cols-3 gap-3">
               <div className="rounded-2xl bg-green-50 p-4 text-center">
-                <p className="text-2xl font-semibold text-green-700">1,284</p>
-                <p className="mt-1 text-xs text-slate-500">Active</p>
+                <p className="text-2xl font-semibold text-green-700">
+                  {subscriptions.active_clinics ?? 0}
+                </p>
+
+                <p className="mt-1 text-xs text-slate-500">
+                  Active
+                </p>
               </div>
 
               <div className="rounded-2xl bg-yellow-50 p-4 text-center">
-                <p className="text-2xl font-semibold text-yellow-700">86</p>
-                <p className="mt-1 text-xs text-slate-500">Pending</p>
+                <p className="text-2xl font-semibold text-yellow-700">
+                  {subscriptions.inactive_clinics ?? 0}
+                </p>
+
+                <p className="mt-1 text-xs text-slate-500">
+                  Inactive
+                </p>
               </div>
 
               <div className="rounded-2xl bg-red-50 p-4 text-center">
-                <p className="text-2xl font-semibold text-red-700">42</p>
-                <p className="mt-1 text-xs text-slate-500">Expired</p>
+                <p className="text-2xl font-semibold text-red-700">
+                  {subscriptions.total_plans ?? 0}
+                </p>
+
+                <p className="mt-1 text-xs text-slate-500">
+                  Plans
+                </p>
               </div>
             </div>
           </div>
@@ -279,6 +398,7 @@ function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-semibold">Analytics</h2>
+
                 <p className="mt-1 text-sm text-slate-500">
                   Platform performance overview
                 </p>
@@ -291,40 +411,82 @@ function AdminDashboard() {
               <div>
                 <div className="mb-2 flex justify-between text-sm">
                   <span className="text-slate-600">
-                    Appointment completion
+                    Platform performance
                   </span>
-                  <span className="font-semibold">92%</span>
+
+                  <span className="font-semibold">
+                    {analyticsPerformance}%
+                  </span>
                 </div>
 
                 <div className="h-2 rounded-full bg-slate-100">
-                  <div className="h-2 w-[92%] rounded-full bg-blue-600" />
+                  <div
+                    className="h-2 rounded-full bg-blue-600"
+                    style={{ width: `${analyticsPerformance}%` }}
+                  />
                 </div>
               </div>
 
               <div>
                 <div className="mb-2 flex justify-between text-sm">
                   <span className="text-slate-600">
-                    Patient satisfaction
+                    Average wait time
                   </span>
-                  <span className="font-semibold">96%</span>
+
+                  <span className="font-semibold">
+                    {analytics.average_wait_time ?? 0} min
+                  </span>
                 </div>
 
                 <div className="h-2 rounded-full bg-slate-100">
-                  <div className="h-2 w-[96%] rounded-full bg-green-500" />
+                  <div
+                    className="h-2 rounded-full bg-green-500"
+                    style={{
+                      width: `${Math.min(
+                        100,
+                        (analytics.average_wait_time ?? 0) * 5
+                      )}%`,
+                    }}
+                  />
                 </div>
               </div>
 
               <div>
                 <div className="mb-2 flex justify-between text-sm">
                   <span className="text-slate-600">
-                    Doctor availability
+                    Walkout rate
                   </span>
-                  <span className="font-semibold">84%</span>
+
+                  <span className="font-semibold">
+                    {analytics.average_walkout_rate ?? 0}%
+                  </span>
                 </div>
 
                 <div className="h-2 rounded-full bg-slate-100">
-                  <div className="h-2 w-[84%] rounded-full bg-indigo-600" />
+                  <div
+                    className="h-2 rounded-full bg-indigo-600"
+                    style={{
+                      width: `${Math.min(
+                        100,
+                        analytics.average_walkout_rate ?? 0
+                      )}%`,
+                    }}
+                  />
                 </div>
+              </div>
+
+              <div className="pt-1 text-sm text-slate-500">
+                Total patients recorded:{" "}
+                <span className="font-semibold text-slate-700">
+                  {analytics.total_patients ?? 0}
+                </span>
+              </div>
+
+              <div className="text-sm text-slate-500">
+                Doctor availability:{" "}
+                <span className="font-semibold text-slate-700">
+                  {doctorAvailability}%
+                </span>
               </div>
             </div>
           </div>
