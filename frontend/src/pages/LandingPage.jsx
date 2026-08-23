@@ -72,38 +72,6 @@ function LandingPage({
               >
                 <HeartPulse className="h-5 w-5" /> Get Started
               </button>
-              <button
-                onClick={onPatientClick}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 px-5 py-3 text-sm font-bold text-emerald-800 shadow-sm transition duration-300 cursor-pointer"
-              >
-                <UserCheck className="h-4 w-4 text-emerald-700" /> Patient Portal (PWA)
-              </button>
-              <button
-                onClick={onDoctorClick}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-sky-300 bg-sky-50 hover:bg-sky-100 px-5 py-3 text-sm font-bold text-sky-800 shadow-sm transition duration-300 cursor-pointer"
-              >
-                <Activity className="h-4 w-4 text-sky-700" /> Doctor Workspace
-              </button>
-              <button
-                onClick={onDoctorsClick}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white hover:bg-slate-50 px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition duration-300 cursor-pointer"
-              >
-                <Stethoscope className="h-4 w-4 text-slate-500" /> Specialists
-              </button>
-              <button
-                onClick={onMarketingClick}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-amber-200 bg-amber-50 hover:bg-amber-100 px-5 py-3 text-sm font-bold text-amber-800 shadow-sm transition duration-300 cursor-pointer"
-              >
-                <CalendarDays className="h-4 w-4 text-amber-600" /> Services
-              </button>
-              {!authenticated && (
-                <button
-                  onClick={onLoginClick}
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 px-5 py-3 text-sm font-bold text-indigo-700 shadow-sm transition duration-300 cursor-pointer"
-                >
-                  <ShieldCheck className="h-4 w-4 text-indigo-600" /> Sign In / Login
-                </button>
-              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
